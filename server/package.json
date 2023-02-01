@@ -1,0 +1,19 @@
+{
+    "name": "acme-explorer",
+    "version": "1.0.0",
+    "description": "Projecto para la asignatura de Cloud Engineering",
+    "license": "UNLICENSED",
+    "type": "module",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "prestart": "npm install --only=prod",
+        "start": "nodemon index.js",
+        "build": "docker build . -t acme-explorer:1.0.0 -t acme-explorer:latest"
+    },
+    "dependencies": {
+        "@oas-tools/core": "^3.0.0",
+        "express": "^4.18.0",
+        "nodemon": "^2.0.20"
+    }
+}
