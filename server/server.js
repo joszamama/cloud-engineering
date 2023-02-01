@@ -1,10 +1,28 @@
 import http from "http";
 import express from "express";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import { initialize } from "@oas-tools/core";
 
+dotenv.config();
 
 const deploy = async () => {
-    const serverPort = 8080;
+    const serverPort = process.env.PORT || 8081;
+
+    const mongoUri = process.env.DATABASE_URL || 'mongodb://localhost:27017/test';
+    const mongoOptions = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    };
+
+    await mongoose.connect(mongoUri, mongoOptions);
+    if (mongoose.connection.readyState !== 1) {
+        console.log('Error connecting to database');
+        process.exit(1);
+    } else {
+        console.log('Connected to database');
+    }
+
     const app = express();
     app.use(express.json({limit: '50mb'}));
 
