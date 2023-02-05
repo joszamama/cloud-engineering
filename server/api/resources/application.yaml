@@ -1,0 +1,138 @@
+paths:
+  api-v1-applications:
+    x-router-controller: ApplicationController
+    get:
+      tags: [ Applications ]
+      description: Returns all applications
+      operationId: getApplication
+      responses:
+        200:
+          description: Application list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/application'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      tags: [ Applications ]
+      description: Creates a new application
+      operationId: addApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/application'
+        description: Application to be created
+        required: true
+      responses:
+        201:
+          description: Application
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-applications-id:
+    x-router-controller: ApplicationController
+    get:
+      tags: [ Applications ]
+      description: Returns a single application by its _id
+      operationId: findApplicationBy_id
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the application to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Application found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/application'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      tags: [ Applications ]
+      description: Update a application based on its _id
+      operationId: updateApplication
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the application to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/application'
+        description: Application to be updated
+        required: true
+      responses:
+        '204':
+          description: Application updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      tags: [ Applications ]
+      description: Deletes a single application based on its _id
+      operationId: deleteApplication
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the application to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Application deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  application:
+    type: object
+    required:
+      - _id
+      - creation
+      - status
+    properties:
+      _id:
+        type: string
+        readOnly: true
+      creation:
+        type: string
+        format: date
+      status:
+        type: string
+        enum: [PENDING, REJECTED, DUE, ACCEPTED, CANCELLED]
+        default: PENDING
+      reject_reason:
+        type: string
+      reject_comment:
+        type: string

@@ -1,0 +1,142 @@
+paths:
+  api-v1-finders:
+    x-router-controller: FinderController
+    get:
+      tags: [ Finders ]
+      description: Returns all finders
+      operationId: getFinder
+      responses:
+        200:
+          description: Finder list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/finder'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      tags: [ Finders ]
+      description: Creates a new finder
+      operationId: addFinder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/finder'
+        description: Finder to be created
+        required: true
+      responses:
+        201:
+          description: Finder
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-finders-id:
+    x-router-controller: FinderController
+    get:
+      tags: [ Finders ]
+      description: Returns a single finder by its _id
+      operationId: findFinderBy_id
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the finder to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Finder found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/finder'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      tags: [ Finders ]
+      description: Update a finder based on its _id
+      operationId: updateFinder
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the finder to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/finder'
+        description: Finder to be updated
+        required: true
+      responses:
+        '204':
+          description: Finder updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      tags: [ Finders ]
+      description: Deletes a single finder based on its _id
+      operationId: deleteFinder
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the finder to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Finder deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  finder:
+    type: object
+    required:
+      - _id
+    properties:
+      _id:
+        type: string
+        readOnly: true
+      keyword:
+        type: string
+        default: null
+      price_from:
+        type: number
+        default: null
+      price_to:
+        type: number
+        default: null
+      date_from:
+        type: string
+        format: date
+        default: null
+      date_to:
+        type: string
+        format: date
+        default: null
