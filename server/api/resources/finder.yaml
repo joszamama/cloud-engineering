@@ -118,25 +118,33 @@ schemas:
   finder:
     type: object
     required:
-      - _id
+      - id
     properties:
-      _id:
+      id:
         type: string
         readOnly: true
       keyword:
         type: string
         default: null
-      price_from:
+      priceFrom:
         type: number
         default: null
-      price_to:
+      priceTo:
         type: number
         default: null
-      date_from:
+      dateFrom:
         type: string
         format: date
         default: null
-      date_to:
+      dateTo:
         type: string
         format: date
         default: null
+      actor:
+        type: string
+      trips:
+        type: array
+        items:
+          oneOf:
+            - $ref: './trip.yaml#/schemas/trip'
+            - type: string

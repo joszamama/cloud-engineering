@@ -118,14 +118,14 @@ schemas:
   actor:
     type: object
     required:
-      - _id
+      - id
       - name
       - surname
       - password
-      - mail
-      - preferred_lenguage
+      - email
+      - preferredLanguage
     properties:
-      _id:
+      id:
         type: string
         readOnly: true
       name:
@@ -135,17 +135,41 @@ schemas:
       password:
         type: string
         writeOnly: true
-      mail:
+      email:
         type: string
         format: email
+      role:
+        type: string
       phone:
         type: string
       address:
         type: string
-      ban:
+      banned:
         type: boolean
-      role:
+      preferredLanguage:
         type: string
-      preferred_lenguage:
-        type: string
-        enum: [Spanish, English]
+        enum: [Español, English]
+      managedTrips:
+        type: array
+        items:
+          oneOf:
+            - $ref: './trip.yaml#/schemas/trip'
+            - type: string
+      applications:
+        type: array
+        items:
+          oneOf:
+            - $ref: './application.yaml#/schemas/application'
+            - type: string
+      sponsorships:
+        type: array
+        items:
+          oneOf:
+            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - type: string
+      finder:
+        type: array
+        items:
+          oneOf:
+            - $ref: './finder.yaml#/schemas/finder'
+            - type: string

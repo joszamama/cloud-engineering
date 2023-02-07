@@ -125,7 +125,7 @@ schemas:
       - requirements
       - startDate
       - endDate
-      - is_cancelled
+      - cancelled
     properties:
       ticker:
         type: string
@@ -148,7 +148,27 @@ schemas:
         format: date
       pictures:
         type: string
-      is_cancelled:
+      cancelled:
         type: boolean
-      cancel_reason:
+      cancelReason:
         type: string
+      stages:
+        type: array
+        items:
+          $ref: './stage.yaml#/schemas/stage'
+      manager:
+        type: string
+      finder:
+        type: string
+      sponsorships:
+        type: array
+        items:
+          oneOf:
+            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - type: string
+      applications:
+        type: array
+        items:
+          oneOf:
+            - $ref: './application.yaml#/schemas/application'
+            - type: string

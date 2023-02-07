@@ -118,12 +118,16 @@ schemas:
   sponsorship:
     type: object
     required:
-      - _id
+      - id
     properties:
-      _id:
+      id:
         type: string
         readOnly: true
       banner:
         type: string
       link:
+        type: string
+      actor:
+        type: string
+      trip:
         type: string

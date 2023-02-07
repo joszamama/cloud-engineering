@@ -118,21 +118,25 @@ schemas:
   application:
     type: object
     required:
-      - _id
-      - creation
+      - id
+      - createdAt
       - status
     properties:
-      _id:
+      id:
         type: string
         readOnly: true
-      creation:
+      createdAt:
         type: string
         format: date
       status:
         type: string
         enum: [PENDING, REJECTED, DUE, ACCEPTED, CANCELLED]
         default: PENDING
-      reject_reason:
+      rejectReason:
         type: string
-      reject_comment:
+      rejectComment:
+        type: string
+      actor:
+        type: string
+      trip:
         type: string

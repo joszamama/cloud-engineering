@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-const bcrypt = require("bcrypt");
-var uniqueValidator = require('mongoose-unique-validator');
+import bcrypt from 'bcrypt';
 
 const ActorSchema = new mongoose.Schema({
     name: {type: String, required: [true, "can't be blank"]},
@@ -11,7 +10,11 @@ const ActorSchema = new mongoose.Schema({
     phone: {type: String, required: [true, "can't be blank"]},
     address: {type: String, required: [true, "can't be blank"]},
     banned: {type: Boolean, default: false},
-    preferredLanguage: {type: String, enum:["en", "es"], default: "en"},
+    preferredLanguage: {type: String, enum:["English", "Español"], default: "English"},
+    managedTrips: [{type: mongoose.Schema.Types.ObjectId, ref: 'Trip'}],
+    applications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Application'}],
+    sponsorships: [{type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship'}],
+    finders: [{type: mongoose.Schema.Types.ObjectId, ref: 'Finder'}]
 }, {timestamps: true});
 
 ActorSchema.methods.cleanup = function() {
@@ -25,10 +28,11 @@ ActorSchema.methods.cleanup = function() {
         address: this.address,
         banned: this.banned,
         preferredLanguage: this.preferredLanguage,
+        ...(this.role === "Manager" ? {managedTrips: this.managedTrips} : {}),
+        ...(this.role === "Explorer" ? {applications: this.applications, finders: this.finders} : {}),
+        ...(this.role === "Sponsor" ? {sponsorships: this.sponsorships} : {})
     };
 }
-
-ActorSchema.plugin(uniqueValidator, {message: 'is already taken.'});
 
 ActorSchema.pre('save', function(next) {
     if (!this.isModified('password')) {
@@ -40,4 +44,4 @@ ActorSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Actor', ActorSchema)
+export default mongoose.model('Actor', ActorSchema)

@@ -11,8 +11,6 @@ paths:
   /api/v1/sponsorships/{_id}: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships-id}
   /api/v1/trips: {$ref: resources/trip.yaml#/paths/api-v1-trips}
   /api/v1/trips/{ticker}: {$ref: resources/trip.yaml#/paths/api-v1-trips-ticker}
-  /api/v1/stages: {$ref: resources/stage.yaml#/paths/api-v1-stages}
-  /api/v1/stages/{_id}: {$ref: resources/stage.yaml#/paths/api-v1-stages-id}
   /api/v1/applications: {$ref: resources/application.yaml#/paths/api-v1-applications}
   /api/v1/applications/{_id}: {$ref: resources/application.yaml#/paths/api-v1-applications-id}
   /api/v1/finders: {$ref: resources/finder.yaml#/paths/api-v1-finders}
@@ -23,7 +21,6 @@ components:
     actor: {$ref: resources/actor.yaml#/schemas/actor}
     sponsorship: {$ref: resources/sponsorship.yaml#/schemas/sponsorship}
     trip: {$ref: resources/trip.yaml#/schemas/trip}
-    stage: {$ref: resources/stage.yaml#/schemas/stage}
     application: {$ref: resources/application.yaml#/schemas/application}
     finder: {$ref: resources/finder.yaml#/schemas/finder}
     error:
