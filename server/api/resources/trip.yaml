@@ -1,0 +1,174 @@
+paths:
+  api-v1-trips:
+    x-router-controller: TripController
+    get:
+      tags: [ Trips ]
+      description: Returns all trips
+      operationId: getTrip
+      responses:
+        200:
+          description: Trip list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/trip'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      tags: [ Trips ]
+      description: Creates a new trip
+      operationId: addTrip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/trip'
+        description: Trip to be created
+        required: true
+      responses:
+        201:
+          description: Trip
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-trips-ticker:
+    x-router-controller: TripController
+    get:
+      tags: [ Trips ]
+      description: Returns a single trip by its ticker
+      operationId: findByticker
+      parameters:
+        - required: true
+          name: ticker
+          description: ticker of the trip to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Trip found by ticker
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/trip'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      tags: [ Trips ]
+      description: Update a trip based on its ticker
+      operationId: updateTrip
+      parameters:
+        - required: true
+          name: ticker
+          description: ticker of the trip to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/trip'
+        description: Trip to be updated
+        required: true
+      responses:
+        '204':
+          description: Trip updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      tags: [ Trips ]
+      description: Deletes a single trip based on its ticker
+      operationId: deleteTrip
+      parameters:
+        - required: true
+          name: ticker
+          description: ticker of the trip to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Trip deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  trip:
+    type: object
+    required:
+      - ticker
+      - title
+      - description
+      - price
+      - requirements
+      - startDate
+      - endDate
+      - cancelled
+    properties:
+      ticker:
+        type: string
+        readOnly: true
+      title:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+      requirements:
+        type: array
+        items: 
+          type: string
+      startDate:
+        type: string
+        format: date
+      endDate:
+        type: string
+        format: date
+      pictures:
+        type: string
+      cancelled:
+        type: boolean
+      cancelReason:
+        type: string
+      stages:
+        type: array
+        items:
+          $ref: './stage.yaml#/schemas/stage'
+      manager:
+        type: string
+      finder:
+        type: string
+      sponsorships:
+        type: array
+        items:
+          oneOf:
+            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - type: string
+      applications:
+        type: array
+        items:
+          oneOf:
+            - $ref: './application.yaml#/schemas/application'
+            - type: string

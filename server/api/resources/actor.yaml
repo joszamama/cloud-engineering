@@ -1,0 +1,175 @@
+paths:
+  api-v1-actors:
+    x-router-controller: ActorController
+    get:
+      tags: [ Actors ]
+      description: Returns all actors
+      operationId: getActor
+      responses:
+        200:
+          description: Actor list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      tags: [ Actors ]
+      description: Creates a new actor
+      operationId: addActor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/actor'
+        description: Actor to be created
+        required: true
+      responses:
+        201:
+          description: Actor
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-actors-id:
+    x-router-controller: ActorController
+    get:
+      tags: [ Actors ]
+      description: Returns a single actor by its _id
+      operationId: findBy_id
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the actor to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Actor found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      tags: [ Actors ]
+      description: Update a actor based on its _id
+      operationId: updateActor
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the actor to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/actor'
+        description: Actor to be updated
+        required: true
+      responses:
+        '204':
+          description: Actor updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      tags: [ Actors ]
+      description: Deletes a single actor based on its _id
+      operationId: deleteActor
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the actor to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Actor deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  actor:
+    type: object
+    required:
+      - id
+      - name
+      - surname
+      - password
+      - email
+      - preferredLanguage
+    properties:
+      id:
+        type: string
+        readOnly: true
+      name:
+        type: string
+      surname:
+        type: string
+      password:
+        type: string
+        writeOnly: true
+      email:
+        type: string
+        format: email
+      role:
+        type: string
+      phone:
+        type: string
+      address:
+        type: string
+      banned:
+        type: boolean
+      preferredLanguage:
+        type: string
+        enum: [Español, English]
+      managedTrips:
+        type: array
+        items:
+          oneOf:
+            - $ref: './trip.yaml#/schemas/trip'
+            - type: string
+      applications:
+        type: array
+        items:
+          oneOf:
+            - $ref: './application.yaml#/schemas/application'
+            - type: string
+      sponsorships:
+        type: array
+        items:
+          oneOf:
+            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - type: string
+      finder:
+        type: array
+        items:
+          oneOf:
+            - $ref: './finder.yaml#/schemas/finder'
+            - type: string

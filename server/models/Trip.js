@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Stage } from "./Stage.js";
 
 const TripSchema = new mongoose.Schema({
     ticker: {type: String, required: [true, "can't be blank"], unique: true, match: [/^[0-9]{6}-[A-Z]{4}$/, "is invalid"]},
@@ -11,11 +12,16 @@ const TripSchema = new mongoose.Schema({
     pictures: {type: [Buffer], required: [true, "can't be blank"]},
     cancelled: {type: Boolean, default: false},
     cancelReason: {type: String},
+    stages: [Stage],
+    manager: {type: mongoose.Schema.Types.ObjectId, ref: 'Actor'},
+    finder: {type: mongoose.Schema.Types.ObjectId, ref: 'Finder'},
+    sponsorships: [{type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship'}],
+    applications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Application'}]
+
 }, {timestamps: true});
 
 TripSchema.methods.cleanup = function() {
     return {
-        id: this._id,
         ticker: this.ticker,
         title: this.title,
         description: this.description,
@@ -26,9 +32,12 @@ TripSchema.methods.cleanup = function() {
         pictures: this.pictures,
         cancelled: this.cancelled,
         cancelReason: this.cancelReason,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+        stages: this.stages,
+        manager: this.manager,
+        finder: this.finder,
+        sponsorships: this.sponsorships,
+        applications: this.applications
     };
 }
 
-module.exports = mongoose.model('Trip', TripSchema)
+export default mongoose.model('Trip', TripSchema)

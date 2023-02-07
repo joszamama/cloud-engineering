@@ -1,0 +1,18 @@
+schemas:
+  stage:
+    type: object
+    required:
+      - id
+      - title
+      - description
+      - price
+    properties:
+      id:
+        type: string
+        readOnly: true
+      title:
+        type: string
+      description:
+        type: string
+      price:
+        type: number

@@ -11,10 +11,8 @@ StageSchema.methods.cleanup = function() {
         id: this._id,
         title: this.title,
         description: this.description,
-        price: this.price,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+        price: this.price
     };
 }
 
-module.exports = mongoose.model('Stage', StageSchema)
+export const Stage = StageSchema;

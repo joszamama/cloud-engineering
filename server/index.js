@@ -1,8 +1,15 @@
 import server from './server.js';
+import mongoose from 'mongoose';
 
 const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 
-server.deploy(env).catch(err => { console.log(err); });
+mongoose.set('strictQuery', false);
+mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://localhost:27017/default-db', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  server.deploy(env).catch(err => console.log(err));
+});
 
 // quit on ctrl-c when running docker in terminal
 process.on('SIGINT', function onSigint () {

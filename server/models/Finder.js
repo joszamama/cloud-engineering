@@ -5,7 +5,9 @@ const FinderSchema = new mongoose.Schema({
     priceFrom: {type: Number},
     priceTo: {type: Number},
     dateFrom: {type: Date},
-    dateTo: {type: Date}
+    dateTo: {type: Date},
+    actor: {type: mongoose.Schema.Types.ObjectId, ref: 'Actor'},
+    trips: [{type: mongoose.Schema.Types.ObjectId, ref: 'Trip'}]
 }, {timestamps: true});
 
 FinderSchema.methods.cleanup = function() {
@@ -16,9 +18,9 @@ FinderSchema.methods.cleanup = function() {
         priceTo: this.priceTo,
         dateFrom: this.dateFrom,
         dateTo: this.dateTo,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+        trips: this.trips,
+        actor: this.actor
     };
 }
 
-module.exports = mongoose.model('Finder', FinderSchema)
+export default mongoose.model('Finder', FinderSchema)

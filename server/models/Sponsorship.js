@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 const SponsorshipSchema = new mongoose.Schema({
     banner: {type: String, required: [true, "can't be blank"]},
     link: {type: String, required: [true, "can't be blank"]},
+    actor: {type: mongoose.Schema.Types.ObjectId, ref: 'Actor'},
+    trip: {type: mongoose.Schema.Types.ObjectId, ref: 'Trip'}
 }, {timestamps: true});
 
 SponsorshipSchema.methods.cleanup = function() {
@@ -10,9 +12,9 @@ SponsorshipSchema.methods.cleanup = function() {
         id: this._id,
         banner: this.banner,
         link: this.link,
-        createdAt: this.createdAt,
-        updatedAt: this.updatedAt,
+        actor: this.actor,
+        trip: this.trip
     };
 }
 
-module.exports = mongoose.model('Sponsorship', SponsorshipSchema)
+export default mongoose.model('Sponsorship', SponsorshipSchema)
