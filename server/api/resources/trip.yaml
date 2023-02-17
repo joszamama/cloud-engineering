@@ -45,7 +45,7 @@ paths:
     get:
       tags: [ Trips ]
       description: Returns a single trip by its ticker
-      operationId: findByticker
+      operationId: findByTicker
       parameters:
         - required: true
           name: ticker
