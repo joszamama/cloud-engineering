@@ -17,7 +17,8 @@ const TripSchema = new mongoose.Schema({
     finder: { type: mongoose.Schema.Types.ObjectId, ref: 'Finder' },
     sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
     applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
-
+}, {
+    timestamps: true,
     statics: {
         getDashboardMetrics: function () {
             return this.aggregate({
@@ -97,8 +98,7 @@ const TripSchema = new mongoose.Schema({
             })
         }
     }
-
-}, { timestamps: true });
+});
 
 TripSchema.methods.cleanup = function () {
     return {

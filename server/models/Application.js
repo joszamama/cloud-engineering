@@ -6,6 +6,8 @@ const ApplicationSchema = new mongoose.Schema({
     rejectComment: { type: String },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
     trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' },
+}, {
+    timestamps: true,
     statics: {
         getRatiosByStatus: function () {
             return this.aggregate([
@@ -46,8 +48,7 @@ const ApplicationSchema = new mongoose.Schema({
             ]);
         }
     }
-
-}, { timestamps: true });
+});
 
 ApplicationSchema.methods.cleanup = function () {
     return {
