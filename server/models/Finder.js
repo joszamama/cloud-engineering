@@ -23,4 +23,6 @@ FinderSchema.methods.cleanup = function() {
     };
 }
 
+FinderSchema.index({ keyword: "text" })
+
 export default mongoose.model('Finder', FinderSchema)
