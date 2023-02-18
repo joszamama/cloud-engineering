@@ -1,4 +1,21 @@
 import Actor from '../models/Actor.js';
+import fs from 'fs';
+
+async function findUserByIdAndSelectLenguage(id) {
+    let lenguage = "";
+    await Actor.findById(id).then(actor => {
+        lenguage = actor.preferredLanguage.slice(0, 2).toLowerCase()
+    }).catch(err => {
+        lenguage = "en";
+    });
+    return lenguage;
+}
+
+function getErrorMessages(language, code) {
+    const filePath = `./api/error-messages/error.${language}.json`;
+    const data = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(data)[code];
+}
 
 export function getActor(req, res) {
     Actor.find().then(actors => {
@@ -21,16 +38,18 @@ export function addActor(req, res) {
 }
 
 export function findBy_id(req, res) {
-    Actor.findOne({ _id: req.params._id }).then(actor => {
+    Actor.findOne({ _id: req.params._id }).then(async actor => {
         if (!actor) {
+            let lenguage = await findUserByIdAndSelectLenguage(req.body._id);
             return res.status(404).send({
-                message: "Actor not found with _id " + req.params._id
+                message: getErrorMessages(lenguage, "404") || "Actor not found with _id " + req.params._id
             });
         }
         res.send(actor.cleanup());
-    }).catch(err => {
+    }).catch(async err => {
+        let lenguage = await findUserByIdAndSelectLenguage(req.body._id);
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: "Error retrieving Actor with _id " + req.params._id
+            message: getErrorMessages(lenguage, "500") || "Error retrieving Actor with _id " + req.params._id
         });
     });
 }
