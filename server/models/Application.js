@@ -9,7 +9,7 @@ const ApplicationSchema = new mongoose.Schema({
 }, {
     timestamps: true,
     statics: {
-        getRatiosByStatus: function () {
+        getDashboardMetrics: function () {
             return this.aggregate([
                 {
                     $facet: {
