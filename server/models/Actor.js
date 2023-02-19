@@ -5,7 +5,7 @@ const ActorSchema = new mongoose.Schema({
     name: {type: String, required: [true, "can't be blank"]},
     surname: {type: String, required: [true, "can't be blank"]},
     email: {type: String, lowercase: true, required: [true, "can't be blank"], match: [/\S+@\S+\.\S+/, 'is invalid'], unique: true, index: true},
-    role: {type: String, enum:["Administrator", "Manager", "Explorer"], ref: 'Role', required: [true, "can't be blank"]},
+    role: {type: String, enum:["Administrator", "Manager", "Explorer", "Sponsor"], ref: 'Role', required: [true, "can't be blank"]},
     password: {type: String, required: [true, "can't be blank"]},
     phone: {type: String, required: [true, "can't be blank"]},
     address: {type: String, required: [true, "can't be blank"]},
