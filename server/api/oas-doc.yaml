@@ -4,6 +4,9 @@ info:
   title: ACME Explorer
   description: Projecto para la asignatura de Cloud Engineering 
 
+security:
+  - apikey: []
+  
 paths:
   /api/v1/actors: {$ref: resources/actor.yaml#/paths/api-v1-actors}
   /api/v1/actors/{_id}: {$ref: resources/actor.yaml#/paths/api-v1-actors-id}
@@ -17,6 +20,11 @@ paths:
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
 
 components:
+  securitySchemes:
+    apikey:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     actor: {$ref: resources/actor.yaml#/schemas/actor}
     sponsorship: {$ref: resources/sponsorship.yaml#/schemas/sponsorship}
