@@ -8,6 +8,7 @@
     "main": "index.js",
     "scripts": {
         "start": "nodemon -r dotenv/config index.js",
+        "start-local": "nodemon index.js",
         "build": "docker build . -t acme-explorer:1.0.0 -t acme-explorer:latest"
     },
     "dependencies": {
