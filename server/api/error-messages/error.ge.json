@@ -1,0 +1,11 @@
+{
+    "200": "OK",
+    "201": "Erstellt",
+    "204": "Kein Inhalt",
+    "400": "Ungültige Anfrage",
+    "401": "Unbefugt",
+    "403": "Verboten",
+    "404": "Nicht gefunden",
+    "409": "Konflikt",
+    "500": "Interner Serverfehler"
+}
