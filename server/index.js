@@ -1,8 +1,5 @@
 import server from './server.js';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 console.log("Env: ", env)
