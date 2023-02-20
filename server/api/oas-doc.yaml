@@ -18,6 +18,7 @@ paths:
   /api/v1/applications/{_id}: {$ref: resources/application.yaml#/paths/api-v1-applications-id}
   /api/v1/finders: {$ref: resources/finder.yaml#/paths/api-v1-finders}
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
+  /api/v1/config: {$ref: resources/configuration.yaml#/paths/api-v1-config}
 
 components:
   securitySchemes:
@@ -31,6 +32,7 @@ components:
     trip: {$ref: resources/trip.yaml#/schemas/trip}
     application: {$ref: resources/application.yaml#/schemas/application}
     finder: {$ref: resources/finder.yaml#/schemas/finder}
+    configuration: {$ref: resources/configuration.yaml#/schemas/configuration}
     error:
       type: object
       required:
