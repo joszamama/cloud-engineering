@@ -5,7 +5,7 @@ const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 console.log("Env: ", env)
 
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://localhost:27017/default-db', {
+mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
   autoIndex: env === 'production' ? false : true 
   
   /* Don't build indexes in production, as it will slow down every write operation.
@@ -14,7 +14,7 @@ mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://localhost:27017/default-
   More info: https://mongoosejs.com/docs/guide.html#indexes */
 
 }).then(() => {
-  console.log(`Connected to database: ${process.env.DATABASE_URL ?? 'mongodb://localhost:27017/default-db'}`);
+  console.log(`Connected to database: ${process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db'}`);
   server.deploy(env).catch(err => console.log(err));
 });
 

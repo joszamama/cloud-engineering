@@ -4,7 +4,7 @@ import config from "./oastools.config.js"
 import { initialize } from "@oas-tools/core";
 
 const deploy = async () => {
-    const serverPort = process.env.PORT || 8081;
+    const serverPort = process.env.PORT || 8080;
 
     const app = express();
     app.use(express.json({limit: '50mb'}));

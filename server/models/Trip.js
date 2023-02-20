@@ -8,7 +8,16 @@ const TripSchema = new mongoose.Schema({
     price: { type: Number, required: [true, "can't be blank"] },
     requirements: { type: [String], required: [true, "can't be blank"] },
     startDate: { type: Date, required: [true, "can't be blank"] },
-    endDate: { type: Date, required: [true, "can't be blank"] },
+    endDate: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                return value > this.startDate;
+            },
+            message: '{VALUE} must be after the start date'
+        },
+        required: [true, "can't be blank"]
+    },
     pictures: { type: [Buffer], required: [true, "can't be blank"] },
     cancelled: { type: Boolean, default: false },
     cancelReason: { type: String },
@@ -51,7 +60,7 @@ const TripSchema = new mongoose.Schema({
                 tripsApplications: [
                     {
                         $group: {
-                            _id: "$trip",
+                            _id: "$applications",
                             count: {
                                 $count: {},
                             },
@@ -113,12 +122,12 @@ TripSchema.methods.cleanup = function () {
         cancelReason: this.cancelReason,
         stages: this.stages,
         manager: this.manager,
-        finder: this.finder,
         sponsorships: this.sponsorships,
         applications: this.applications
     };
 }
 
+// ¿Crear uno para inglés y otro para español? ¿Cómo se especificaría el idioma? Haría falta un campo adicional que indicase el idioma 
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
 
 export default mongoose.model('Trip', TripSchema)

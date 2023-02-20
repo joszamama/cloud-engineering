@@ -2,19 +2,45 @@ import Trip from "../models/Trip.js";
 import fs from 'fs';
 
 function getStatusMessage(language, code) {
-    const filePath = `./api/error-messages/error.${language}.json`;
+    const filePath = `./api/error-messages/error.${language?.slice(0, 2).toLowerCase() ?? "en"}.json`;
     const data = fs.readFileSync(filePath, "utf-8");
     return JSON.parse(data)[code];
 }
 
 export function getTrip(req, res) {
-    Trip.find().then(trips => {
-        res.send(trips.map(trip => trip.cleanup()));
-    }).catch(err => {
-        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+
+    if (res.locals.oas.params.search) {
+        const regex = new RegExp(res.locals.oas.params.search, "i");
+
+        if (res.locals.oas.params.exactMatch) {
+            Trip.find({ $text: { $search: regex, $language: "none" } }, { score: { $meta: "textScore" } })
+                .sort({ score: { $meta: 'textScore' } }).exec()
+                .then(trips => {
+                    res.send(trips.map(trip => trip.cleanup()));
+                }).catch(err => {
+                    res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+                        message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+                    });
+                });
+        } else {
+            Trip.find({ $or: [{ ticker: { $regex: regex } }, { title: { $regex: regex } }, { description: { $regex: regex } }] },).then(trips => {
+                res.send(trips.map(trip => trip.cleanup()));
+            }).catch(err => {
+                res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+                    message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+                });
+            });
+        }
+    } else {
+        Trip.find().then(trips => {
+            res.send(trips.map(trip => trip.cleanup()));
+        }).catch(err => {
+            res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+                message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+            });
         });
-    });
+    }
+
 }
 
 export function addTrip(req, res) {
