@@ -1,18 +1,11 @@
 import Finder from '../models/Finder.js';
-import fs from 'fs';
-
-function getStatusMessage(language, code) {
-    const filePath = `./api/error-messages/error.${language}.json`;
-    const data = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(data)[code];
-}
 
 export function getFinder(req, res) {
     Finder.find().then(finders => {
         res.send(finders.map(finder => finder.cleanup()));
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving finders."
+            message: err.message
         });
     });
 }
@@ -22,52 +15,40 @@ export function addFinder(req, res) {
         res.send(finder.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while creating the Finder."
+            message: err.message
         });
     });
 }
 
 export function findFinderBy_id(req, res) {
     Finder.findOne({ _id: req.params._id }).then(finder => {
-        if (!finder) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Finder not found with _id " + req.params._id
-            });
-        }
+        if (!finder) return res.status(404).send({ message: "Finder not found" });
         res.send(finder.cleanup());
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error retrieving Finder with _id " + req.params._id
+            message: err.message
         });
     });
 }
 
 export function updateFinder(req, res) {
     Finder.findByIdAndUpdate(req.params.finderId, req.body, { new: true }).then(finder => {
-        if (!finder) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Finder not found with id " + req.params.finderId
-            });
-        }
+        if (!finder) return res.status(404).send({ message: "Finder Not Found" });
         res.send(finder.cleanup());
     }
     ).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error updating Finder with id " + req.params.finderId
+            message: err.message
         });
     });
 }
 
 export function deleteFinder(req, res) {
     Finder.findByIdAndRemove(req.params._id).then(finder => {
-        if (!finder) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Finder not found with id " + req.params._id
-            });
-        }
+        if (!finder) return res.status(404).send({ message: "Finder Not Found" });
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Could not delete Finder with id " + req.params._id
+            message: err.message
         });
     });
 }

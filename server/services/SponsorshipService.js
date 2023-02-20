@@ -1,18 +1,11 @@
 import Sponsorship from '../models/Sponsorship.js';
-import fs from 'fs';
-
-function getStatusMessage(language, code) {
-    const filePath = `./api/error-messages/error.${language}.json`;
-    const data = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(data)[code];
-}
 
 export function getSponsorship(req, res) {
     Sponsorship.find().then(sponsorships => {
         res.send(sponsorships.map(sponsorship => sponsorship.cleanup()));
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving sponsorships."
+            message: err.message
         });
     });
 }
@@ -22,52 +15,39 @@ export function addSponsorship(req, res) {
         res.send(sponsorship.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while creating the Sponsorship."
+            message: err.message
         });
     });
 }
 
 export function findSponsorshipBy_id(req, res) {
     Sponsorship.findOne({ _id: req.params._id }).then(sponsorship => {
-        if (!sponsorship) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Sponsorship not found with _id " + req.params._id
-            });
-        }
+        if (!sponsorship) return res.status(404).send({ message: "Sponsorship not found" });
         res.send(sponsorship.cleanup());
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error retrieving Sponsorship with _id " + req.params._id
+            message: err.message
         });
     });
 }
 
 export function updateSponsorship(req, res) {
     Sponsorship.findByIdAndUpdate(req.params.sponsorshipId, req.body, { new: true }).then(sponsorship => {
-        if (!sponsorship) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Sponsorship not found with id " + req.params.sponsorshipId
-            });
-        }
+        if (!sponsorship) return res.status(404).send({ message: "Sponsorship Not Found" });
         res.send(sponsorship.cleanup());
-    }
-    ).catch(err => {
+    }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error updating Sponsorship with id " + req.params.sponsorshipId
+            message: err.message
         });
     });
 }
 
 export function deleteSponsorship(req, res) {
     Sponsorship.findByIdAndRemove(req.params._id).then(sponsorship => {
-        if (!sponsorship) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Sponsorship not found with id " + req.params._id
-            });
-        }
+        if (!sponsorship) return res.status(404).send({ message: "Sponsorship Not Found" });
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Could not delete Sponsorship with id " + req.params._id
+            message: err.message
         });
     });
 }
