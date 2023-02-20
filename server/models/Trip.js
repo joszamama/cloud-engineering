@@ -14,7 +14,6 @@ const TripSchema = new mongoose.Schema({
     cancelReason: { type: String },
     stages: [Stage],
     manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    finder: { type: mongoose.Schema.Types.ObjectId, ref: 'Finder' },
     sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
     applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
 }, {
