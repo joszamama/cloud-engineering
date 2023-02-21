@@ -21,6 +21,7 @@ paths:
   /api/v1/finders: {$ref: resources/finder.yaml#/paths/api-v1-finders}
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
   /api/v1/config: {$ref: resources/configuration.yaml#/paths/api-v1-config}
+  /api/v1/dashboard: {$ref: resources/dashboard.yaml#/paths/api-v1-dashboard}
 
 components:
   securitySchemes:
@@ -35,6 +36,7 @@ components:
     application: {$ref: resources/application.yaml#/schemas/application}
     finder: {$ref: resources/finder.yaml#/schemas/finder}
     configuration: {$ref: resources/configuration.yaml#/schemas/configuration}
+    dashboard: {$ref: resources/dashboard.yaml#/schemas/dashboard}
     error:
       type: object
       required:
