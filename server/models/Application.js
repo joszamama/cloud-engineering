@@ -6,49 +6,7 @@ const ApplicationSchema = new mongoose.Schema({
     rejectComment: { type: String },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
     trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' },
-}, {
-    timestamps: true,
-    statics: {
-        getDashboardMetrics: function () {
-            return this.aggregate([
-                {
-                    $facet: {
-                        totalCount: [
-                            {
-                                $group: {
-                                    _id: 0,
-                                    count: {
-                                        $count: {},
-                                    },
-                                },
-                            },
-                        ],
-                        groupCount: [
-                            {
-                                $group: {
-                                    _id: "$status",
-                                    count: { $count: {} },
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    $project: {
-                        ids: "$groupCount._id",
-                        ratios: {
-                            $map: {
-                                input: "$groupCount.count",
-                                as: "group",
-                                in: { $divide: ["$$group", { $first: "$totalCount.count" }] }
-                            },
-                        },
-                    },
-                },
-            ]);
-        }
-    }
-});
+}, { timestamps: true });
 
 ApplicationSchema.methods.cleanup = function () {
     return {
@@ -61,5 +19,7 @@ ApplicationSchema.methods.cleanup = function () {
         actor: this.actor
     };
 }
+
+ApplicationSchema.index({ actor: 1, status: 1 });
 
 export default mongoose.model('Application', ApplicationSchema)

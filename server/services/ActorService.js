@@ -1,18 +1,13 @@
 import Actor from '../models/Actor.js';
-import fs from 'fs';
-
-function getStatusMessage(language, code) {
-    const filePath = `./api/error-messages/error.${language?.slice(0,2).toLowerCase() ?? "en"}.json`;
-    const data = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(data)[code];
-}
+import Trip from '../models/Trip.js';
+import mongoose from 'mongoose';
 
 export function getActor(req, res) {
     Actor.find().then(actors => {
         res.send(actors.map(actor => actor.cleanup()));
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message || "Some error occurred while retrieving actors."
+            message: err.message
         });
     });
 }
@@ -22,52 +17,152 @@ export function addActor(req, res) {
         res.send(actor.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message || "Some error occurred while creating the Actor."
+            message: err.message
         });
     });
 }
 
 export function findBy_id(req, res) {
     Actor.findOne({ _id: req.params._id }).then(async actor => {
-        if (!actor) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Actor not found with _id " + req.params._id
-            });
-        }
+        if (!actor) return res.status(404).send({ message: "Actor not found" });
         res.send(actor.cleanup());
     }).catch(async err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error retrieving Actor with _id " + req.params._id
+            message: err.message
         });
     });
 }
 
 export function updateActor(req, res) {
     Actor.findByIdAndUpdate(req.params.actorId, req.body, { new: true }).then(async actor => {
-        if (!actor) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Actor not found with id " + req.params.actorId
-            });
-        }
+        if (!actor) return res.status(404).send({ message: "Actor Not Found" });
         res.send(actor.cleanup());
-    }
-    ).catch(err => {
+    }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error updating Actor with id " + req.params.actorId
+            message: err.message
         });
     });
 }
 
 export function deleteActor(req, res) {
     Actor.findByIdAndRemove(req.params._id).then(actor => {
-        if (!actor) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Actor not found with id " + req.params._id
-            });
-        }
+        if (!actor) return res.status(404).send({ message: "Actor Not Found" });
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Could not delete Actor with id " + req.params._id
+            message: err.message
+        });
+    });
+}
+
+export function moneyInPeriod(req, res) {
+    let { _id, startDate, endDate } = res.locals.oas.params;
+
+    Trip.aggregate([
+        {
+            $lookup: {
+                from: "applications",
+                localField: "applications",
+                foreignField: "_id",
+                as: "applications",
+            },
+        },
+        {
+            $match: {
+                "applications.actor": mongoose.Types.ObjectId(_id),
+                "applications.status": "ACCEPTED",
+                "applications.updatedAt": {
+                    $gte: new Date(startDate),
+                    $lt: new Date(endDate),
+                },
+            },
+        },
+        {
+            $group: {
+                _id: 0,
+                sum: { $sum: "$price" },
+            },
+        },
+    ]).then(result => {
+        res.send(result);
+    }).catch(err => {
+        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
+        });
+    });
+}
+
+export function explorersInPeriod(req, res) {
+    let { money, comparison, startDate, endDate } = res.locals.oas.params;
+    let comp = {}
+
+    if (comparison == '<') {
+        comp["$lt"] = money
+    } else if (comparison == '>') {
+        comp["$gt"] = money
+    } else if (comparison == '<=') {
+        comp["$lte"] = money
+    } else if (comparison == '>=') {
+        comp["$gte"] = money
+    } else if (comparison == '==') {
+        comp["$eq"] = money
+    } else if (comparison == '!=') {
+        comp["$ne"] = money
+    }
+
+    Actor.aggregate([
+        {
+            $lookup: {
+                from: 'applications',
+                localField: 'applications',
+                foreignField: '_id',
+                as: 'applications'
+            }
+        },
+        {
+            $unwind: {
+                path: "$applications",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'trips',
+                localField: 'applications.trip',
+                foreignField: '_id',
+                as: 'applications.trip'
+            }
+        },
+        {
+            $match: {
+                'applications.status': 'ACCEPTED',
+                'applications.moment': {
+                    $gte: new Date(startDate),
+                    $lt: new Date(endDate)
+                }
+            }
+        },
+        {
+            $unwind: {
+                path: "$applications.trip",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: '$_id',
+                sum: { $sum: '$applications.trip.price' }
+            }
+        },
+        {
+            $match: {
+                sum: comp
+            }
+        }
+    ]).then(result => {
+        res.send(result);
+    }).catch(err => {
+        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
         });
     });
 }

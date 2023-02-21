@@ -54,25 +54,24 @@ async function populateDB() {
             trip.sponsorships = shuffled2.slice(0, Math.floor(Math.random() * 3) + 1);
             trip.sponsorships.forEach(sponsorshipId => sponsorships.find(sponsorship => sponsorship._id === sponsorshipId).trip = trip._id);
     
-            const shuffled3 = finders.filter(finder => finder.actor).sort(() => 0.5 - Math.random()).map(finder => finder._id);
-            trip.finder = shuffled3.slice(0, Math.floor(Math.random() * 3) + 1)[0] ?? null;
-            finders.filter(finder => finder._id === trip.finder).forEach(finder => finder.trips = [...finder.trips, trip._id]);
+            const randomFinder = finders.filter(finder => finder.actor).sort(() => 0.5 - Math.random()).map(finder => finder._id)[0];
+            finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.result = [...finder.result, trip]);
         });
     
         // Exclude all entities with no relationships
-        trips = trips.filter(trip => trip.applications.length !== 0 || trip.sponsorships.length !== 0 || !trip.finder || !trip.manager);
+        trips = trips.filter(trip => trip.applications.length !== 0 || trip.sponsorships.length !== 0 || !trip.manager);
         sponsorships = sponsorships.filter(sponsorship => sponsorship.trip && sponsorship.actor);
-        finders = finders.filter(finder => finder.trips.length !== 0 && finder.actor);
+        finders = finders.filter(finder => finder.result.length !== 0 && finder.actor);
         applications = applications.filter(application => application.trip && application.actor);
         actors = actors.filter(actor => actor.managedTrips.length !== 0 || actor.applications.length !== 0 || actor.sponsorships.length !== 0 || actor.finders.length !== 0);
         
         // Insert data
         await Promise.all([
-            Actor.insertMany(actors),
-            Trip.insertMany(trips),
-            Sponsorship.insertMany(sponsorships),
-            Finder.insertMany(finders),
-            Application.insertMany(applications)
+            Actor.deleteMany({ _id: { $in: actors.map(a => a._id) }}).then(() => Actor.insertMany(actors)),
+            Trip.deleteMany({ _id: { $in: trips.map(a => a._id) }}).then(() => Trip.insertMany(trips)),
+            Sponsorship.deleteMany({ _id: { $in: sponsorships.map(a => a._id) }}).then(() => Sponsorship.insertMany(sponsorships)),
+            Finder.deleteMany({ _id: { $in: finders.map(a => a._id) }}).then(() => Finder.insertMany(finders)),
+            Application.deleteMany({ _id: { $in: applications.map(a => a._id) }}).then(() => Application.insertMany(applications))
         ]).then(() => console.log("Database populated successfully"))
         .catch(error => console.log("Could not populate database: " + error))
     })
