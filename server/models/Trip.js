@@ -49,3 +49,4 @@ TripSchema.methods.cleanup = function () {
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
 
 export default mongoose.model('Trip', TripSchema)
+export const Trip = TripSchema;

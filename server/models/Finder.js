@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Trip } from "./Trip.js";
 
 const FinderSchema = new mongoose.Schema({
     keyword: { type: String },
@@ -16,7 +17,7 @@ const FinderSchema = new mongoose.Schema({
         }
     },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    result: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
+    result: [Trip]
 }, { timestamps: true });
 
 FinderSchema.methods.cleanup = function () {

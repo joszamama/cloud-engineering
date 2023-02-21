@@ -55,7 +55,7 @@ async function populateDB() {
             trip.sponsorships.forEach(sponsorshipId => sponsorships.find(sponsorship => sponsorship._id === sponsorshipId).trip = trip._id);
     
             const randomFinder = finders.filter(finder => finder.actor).sort(() => 0.5 - Math.random()).map(finder => finder._id)[0];
-            finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.result = [...finder.result, trip._id]);
+            finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.result = [...finder.result, trip]);
         });
     
         // Exclude all entities with no relationships
