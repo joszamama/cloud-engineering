@@ -64,4 +64,16 @@ schemas:
       trip_price_deviation:
         type: number
       ratio_by_status:
-        type: number 
+        type: object
+      price_range_average:
+        type: object
+      top10_finder_keywords:
+        type: array
+        items:
+          type: object
+          properties:
+            keyword:
+              type: string
+              nullable: true
+            count:
+              type: integer
