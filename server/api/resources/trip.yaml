@@ -2,21 +2,21 @@ paths:
   api-v1-trips:
     x-router-controller: TripController
     get:
-      tags: [ Trips ]
+      tags: [Trips]
       description: Returns all trips
       operationId: getTrip
       parameters:
-          - in: query
-            name: search
-            schema:
-              type: string
-            description: The key word to be searched in the ticker, title or description of the trips.
-          - in: query
-            name: exactMatch
-            schema:
-              type: boolean
-              default: false
-            description: Flag that indicates whether the search is full-text or partial-text.
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: The key word to be searched in the ticker, title or description of the trips.
+        - in: query
+          name: exactMatch
+          schema:
+            type: boolean
+            default: false
+          description: Flag that indicates whether the search is full-text or partial-text.
       responses:
         200:
           description: Trip list
@@ -25,37 +25,37 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/schemas/trip'
+                  $ref: "#/schemas/trip"
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '../oas-doc.yaml#/components/schemas/error'
+                $ref: "../oas-doc.yaml#/components/schemas/error"
     post:
-      tags: [ Trips ]
+      tags: [Trips]
       description: Creates a new trip
       operationId: addTrip
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/schemas/trip'
+              $ref: "#/schemas/trip"
         description: Trip to be created
         required: true
       responses:
         201:
           description: Trip
         default:
-            description: Unexpected error
-            content:
-              application/json:
-                schema:
-                  $ref: '../oas-doc.yaml#/components/schemas/error'
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
   api-v1-trips-ticker:
     x-router-controller: TripController
     get:
-      tags: [ Trips ]
+      tags: [Trips]
       description: Returns a single trip by its ticker
       operationId: findByTicker
       parameters:
@@ -71,15 +71,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/schemas/trip'
+                $ref: "#/schemas/trip"
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '../oas-doc.yaml#/components/schemas/error'
+                $ref: "../oas-doc.yaml#/components/schemas/error"
     put:
-      tags: [ Trips ]
+      tags: [Trips]
       description: Update a trip based on its ticker
       operationId: updateTrip
       parameters:
@@ -93,20 +93,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/schemas/trip'
+              $ref: "#/schemas/trip"
         description: Trip to be updated
         required: true
       responses:
-        '204':
+        "204":
           description: Trip updated
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '../oas-doc.yaml#/components/schemas/error'
+                $ref: "../oas-doc.yaml#/components/schemas/error"
     delete:
-      tags: [ Trips ]
+      tags: [Trips]
       description: Deletes a single trip based on its ticker
       operationId: deleteTrip
       parameters:
@@ -117,14 +117,14 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: Trip deleted
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '../oas-doc.yaml#/components/schemas/error'
+                $ref: "../oas-doc.yaml#/components/schemas/error"
 
 schemas:
   trip:
@@ -150,7 +150,7 @@ schemas:
         type: number
       requirements:
         type: array
-        items: 
+        items:
           type: string
       startDate:
         type: string
@@ -167,7 +167,7 @@ schemas:
       stages:
         type: array
         items:
-          $ref: './stage.yaml#/schemas/stage'
+          $ref: "./stage.yaml#/schemas/stage"
       manager:
         type: string
       finder:
@@ -176,11 +176,11 @@ schemas:
         type: array
         items:
           oneOf:
-            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - $ref: "./sponsorship.yaml#/schemas/sponsorship"
             - type: string
       applications:
         type: array
         items:
           oneOf:
-            - $ref: './application.yaml#/schemas/application'
+            - $ref: "./application.yaml#/schemas/application"
             - type: string

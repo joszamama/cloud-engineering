@@ -1,5 +1,6 @@
 import server from './server.js';
 import mongoose from 'mongoose';
+import Configuration from './models/Configuration.js';
 
 const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 console.log("Env: ", env)
@@ -13,9 +14,10 @@ mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-
   In production, it's better to disable autoIndex and build the indexes manually (e.g. using the Mongo shell).
   More info: https://mongoosejs.com/docs/guide.html#indexes */
 
-}).then(() => {
+}).then(async () => {
   console.log(`Connected to database: ${process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db'}`);
-  server.deploy(env).catch(err => console.log(err));
+  await Configuration.find({}).then(async cfgs => cfgs?.length === 0 ? await Configuration.create({}) : null);
+  await server.deploy(env).catch(err => console.log(err));
 });
 
 // quit on ctrl-c when running docker in terminal

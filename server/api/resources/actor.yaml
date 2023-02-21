@@ -40,6 +40,40 @@ paths:
               application/json:
                 schema:
                   $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-actors-explorersInPeriod:
+    x-router-controller: ActorController
+    get:
+      tags: [ Actors ]
+      description: Returns the number of explorers in a period that match the comparison criteria with the arbitrary money value
+      operationId: explorersInPeriod
+      parameters:
+        - required: true
+          name: startDate
+          description: Start date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: endDate
+          description: End date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: comparison
+          description: Comparison criteria
+          in: query
+          schema:
+            type: string
+            enum: [">", ">=", "<", "<=", "=", "!="]
+        - required: true
+          name: money
+          description: Arbitrary money value
+          in: query
+          schema:
+            type: number
   api-v1-actors-id:
     x-router-controller: ActorController
     get:
@@ -113,7 +147,46 @@ paths:
             application/json:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
-
+  api-v1-actors-id-moneyInPeriod:
+    x-router-controller: ActorController
+    get:
+      tags: [ Actors ]
+      description: Returns the money earned by an actor in a period
+      operationId: moneyInPeriod
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the actor to fetch
+          in: path
+          schema:
+            type: string
+        - required: true
+          name: startDate
+          description: Start date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: endDate
+          description: End date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Money earned by the actor in the period
+          content:
+            application/json:
+              schema:
+                type: number
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
 schemas:
   actor:
     type: object

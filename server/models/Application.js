@@ -62,6 +62,6 @@ ApplicationSchema.methods.cleanup = function () {
     };
 }
 
-// ApplicationSchema.index({ actor: 1, status: 1 }) Possible index for the future
+ApplicationSchema.index({ actor: 1, status: 1 });
 
 export default mongoose.model('Application', ApplicationSchema)

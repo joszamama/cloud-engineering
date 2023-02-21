@@ -20,3 +20,10 @@ export function deleteActor(req, res) {
     service.deleteActor(req, res);
 }
 
+export function moneyInPeriod(req, res) {
+    service.moneyInPeriod(req, res);
+}
+
+export function explorersInPeriod(req, res) {
+    service.explorersInPeriod(req, res);
+}

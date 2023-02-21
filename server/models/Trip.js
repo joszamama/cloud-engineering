@@ -127,7 +127,6 @@ TripSchema.methods.cleanup = function () {
     };
 }
 
-// ¿Crear uno para inglés y otro para español? ¿Cómo se especificaría el idioma? Haría falta un campo adicional que indicase el idioma 
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
 
 export default mongoose.model('Trip', TripSchema)

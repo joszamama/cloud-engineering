@@ -1,14 +1,7 @@
 import Trip from "../models/Trip.js";
-import fs from 'fs';
-
-function getStatusMessage(language, code) {
-    const filePath = `./api/error-messages/error.${language?.slice(0, 2).toLowerCase() ?? "en"}.json`;
-    const data = fs.readFileSync(filePath, "utf-8");
-    return JSON.parse(data)[code];
-}
 
 export function getTrip(req, res) {
-
+    
     if (res.locals.oas.params.search) {
         const regex = new RegExp(res.locals.oas.params.search, "i");
 
@@ -19,7 +12,7 @@ export function getTrip(req, res) {
                     res.send(trips.map(trip => trip.cleanup()));
                 }).catch(err => {
                     res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-                        message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+                        message: err.message
                     });
                 });
         } else {
@@ -27,7 +20,7 @@ export function getTrip(req, res) {
                 res.send(trips.map(trip => trip.cleanup()));
             }).catch(err => {
                 res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-                    message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+                    message: err.message
                 });
             });
         }
@@ -36,11 +29,10 @@ export function getTrip(req, res) {
             res.send(trips.map(trip => trip.cleanup()));
         }).catch(err => {
             res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while retrieving trips."
+                message: err.message
             });
         });
     }
-
 }
 
 export function addTrip(req, res) {
@@ -48,53 +40,40 @@ export function addTrip(req, res) {
         res.send(trip.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Some error occurred while creating the Trip."
+            message: err.message
         });
     });
 }
 
 export function findByTicker(req, res) {
     Trip.findOne({ ticker: req.params.ticker }).then(trip => {
-        if (!trip) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Trip not found with ticker " + req.params.ticker
-            });
-        }
+        if (!trip) return res.status(404).send({ message: "Trip not found" });
         res.send(trip.cleanup());
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error retrieving Trip with ticker " + req.params.ticker
+            message: err.message
         });
     });
 }
 
 export function updateTrip(req, res) {
     Trip.findByIdAndUpdate(req.params.tripId, req.body, { new: true }).then(trip => {
-        if (!trip) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Trip not found with id " + req.params.tripId
-            });
-        }
+        if (!trip) return res.status(404).send({ message: "Trip not found" });
         res.send(trip.cleanup());
-    }
-    ).catch(err => {
+    }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Error updating Trip with id " + req.params.tripId
+            message: err.message
         });
     });
 }
 
 export function deleteTrip(req, res) {
     Trip.findByIdAndRemove(req.params.tripId).then(trip => {
-        if (!trip) {
-            return res.status(404).send({
-                message: getStatusMessage(res.locals.oas.security.apikey.language, "404") || "Trip not found with id " + req.params.tripId
-            });
-        }
+        if (!trip) return res.status(404).send({ message: "Trip not found" });
         res.send({ message: "Trip deleted successfully!" });
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: getStatusMessage(res.locals.oas.security.apikey.language, "500") || "Could not delete Trip with id " + req.params.tripId
+            message: err.message
         });
     });
 }
