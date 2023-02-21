@@ -9,11 +9,3 @@ export function getDashboard(_req, res) {
         });
     });
 }
-
-// setInterval(async () => {
-//     const appMetrics = await Dashboard.getApplicationMetrics();
-//     const priceMetrics = await Dashboard.getPriceMetrics();
-//     const tripMetrics = await Dashboard.getTripMetrics();
-
-//     console.log(tripMetrics);
-// }, 1000);
