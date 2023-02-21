@@ -9,9 +9,9 @@ security:
   
 paths:
   /api/v1/actors: {$ref: resources/actor.yaml#/paths/api-v1-actors}
-  /api/v1/actors/explorersInPeriod: {$ref: resources/actor.yaml#/paths/api-v1-actors-explorersInPeriod}
   /api/v1/actors/{_id}: {$ref: resources/actor.yaml#/paths/api-v1-actors-id}
-  /api/v1/actors/{_id}/moneyInPeriod: {$ref: resources/actor.yaml#/paths/api-v1-actors-id-moneyInPeriod}
+  /api/v2/actors/explorersInPeriod: {$ref: resources/actor.yaml#/paths/api-v1-actors-explorersInPeriod}
+  /api/v2/actors/{_id}/moneyInPeriod: {$ref: resources/actor.yaml#/paths/api-v1-actors-id-moneyInPeriod}
   /api/v1/sponsorships: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships}
   /api/v1/sponsorships/{_id}: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships-id}
   /api/v1/trips: {$ref: resources/trip.yaml#/paths/api-v1-trips}

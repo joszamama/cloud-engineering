@@ -74,6 +74,19 @@ paths:
           in: query
           schema:
             type: number
+      responses:
+        200:
+          description: Actor found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
   api-v1-actors-id:
     x-router-controller: ActorController
     get:

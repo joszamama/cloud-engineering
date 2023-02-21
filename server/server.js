@@ -11,6 +11,7 @@ const deploy = async () => {
     app.use(express.json({limit: '50mb'}));
     
     use(I18n);
+    use((_req, res, next) => {res.header("Content-Type", "application/json"); next();});
     initialize(app, config).then(() => {
         http.createServer(app).listen(serverPort, () => {
         console.log("\nApp running at http://localhost:" + serverPort);

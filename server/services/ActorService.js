@@ -55,7 +55,6 @@ export function deleteActor(req, res) {
 }
 
 export function moneyInPeriod(req, res) {
-
     let { _id, startDate, endDate } = res.locals.oas.params;
 
     Trip.aggregate([
@@ -109,13 +108,6 @@ export function explorersInPeriod(req, res) {
     } else if (comparison == '!=') {
         comp["$ne"] = money
     }
-
-    console.log("Res: ", res.locals.oas)
-
-    console.log("Money: ", money)
-    console.log("Period from: ", startDate)
-    console.log("Period to: ", endDate)
-    console.log("Comp: ", comp)
 
     Actor.aggregate([
         {
