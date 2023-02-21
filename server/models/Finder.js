@@ -9,52 +9,15 @@ const FinderSchema = new mongoose.Schema({
         type: Date,
         validate: {
             validator: function (value) {
-                return value > this.startDate;
+                if (value !== null && this.dateFrom !== null) return value > this.dateFrom;
+                else return true;
             },
             message: '{VALUE} must be after the start date'
         }
     },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    trips: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
-}, {
-    timestamps: true, statics: {
-        getDashboardMetrics: function () {
-            return this.aggregate([
-                {
-                    $facet: {
-                        avgPriceStats: [
-                            {
-                                $group: {
-                                    _id: 0,
-                                    avgMinPrice: {
-                                        $avg: "$priceFrom",
-                                    },
-                                    avgMaxPrice: {
-                                        $avg: "$priceTo",
-                                    },
-                                    avgPriceRange: {
-                                        $avg: {
-                                            $subtract: [
-                                                "$priceTo",
-                                                "$priceFrom",
-                                            ],
-                                        },
-                                    },
-                                },
-                            },
-                        ],
-                        top10Keywords: [
-                            {
-                                $sortByCount: "$keyword",
-                            },
-                            { $limit: 10 },
-                        ],
-                    },
-                },
-            ]);
-        }
-    }
-});
+    result: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }]
+}, { timestamps: true });
 
 FinderSchema.methods.cleanup = function () {
     return {
@@ -64,7 +27,7 @@ FinderSchema.methods.cleanup = function () {
         priceTo: this.priceTo,
         dateFrom: this.dateFrom,
         dateTo: this.dateTo,
-        trips: this.trips,
+        result: this.result,
         actor: this.actor
     };
 }
@@ -91,24 +54,24 @@ FinderSchema.pre('save', function (callback) {
                 and.push({ $or: or })
             }
 
-            if (finder.date_from && finder.date_to) {
+            if (finder.dateFrom && finder.dateTo) {
                 and.push({
                     startDate: {
-                        $gte: new Date(finder.date_from),
-                        $lt: new Date(finder.date_to)
+                        $gte: new Date(finder.dateFrom),
+                        $lt: new Date(finder.dateTo)
                     },
                     endDate: {
-                        $gte: new Date(finder.date_from),
-                        $lt: new Date(finder.date_to)
+                        $gte: new Date(finder.dateFrom),
+                        $lt: new Date(finder.dateTo)
                     }
                 })
             }
 
-            if (finder.price_from && finder.price_to) {
+            if (finder.priceFrom && finder.priceTo) {
                 and.push({
                     price: {
-                        $gte: finder.price_from,
-                        $lt: finder.price_to
+                        $gte: finder.priceFrom,
+                        $lt: finder.priceTo
                     }
                 })
             }
@@ -118,7 +81,7 @@ FinderSchema.pre('save', function (callback) {
             Trip.find(query, null, { limit: max_result },
                 (err, trips) => {
                     if (trips) {
-                        finder.trips = trips
+                        finder.result = trips
                         callback()
                     }
                 }

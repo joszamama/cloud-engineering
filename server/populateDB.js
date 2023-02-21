@@ -55,13 +55,13 @@ async function populateDB() {
             trip.sponsorships.forEach(sponsorshipId => sponsorships.find(sponsorship => sponsorship._id === sponsorshipId).trip = trip._id);
     
             const randomFinder = finders.filter(finder => finder.actor).sort(() => 0.5 - Math.random()).map(finder => finder._id)[0];
-            finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.trips = [...finder.trips, trip._id]);
+            finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.result = [...finder.result, trip._id]);
         });
     
         // Exclude all entities with no relationships
         trips = trips.filter(trip => trip.applications.length !== 0 || trip.sponsorships.length !== 0 || !trip.manager);
         sponsorships = sponsorships.filter(sponsorship => sponsorship.trip && sponsorship.actor);
-        finders = finders.filter(finder => finder.trips.length !== 0 && finder.actor);
+        finders = finders.filter(finder => finder.result.length !== 0 && finder.actor);
         applications = applications.filter(application => application.trip && application.actor);
         actors = actors.filter(actor => actor.managedTrips.length !== 0 || actor.applications.length !== 0 || actor.sponsorships.length !== 0 || actor.finders.length !== 0);
         
