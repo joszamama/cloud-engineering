@@ -1,4 +1,5 @@
 import { bearerJwt } from "@oas-tools/auth/handlers";
+import Actor from "./models/Actor.js";
 
 export default {
     packageJSON: "package.json",
@@ -20,6 +21,13 @@ export default {
             } 
         },
         swagger: { disable: false, path: "/", ui: { customCss: null, customJs: null } },
-        error: { disable: false, printStackTrace: false, customHandler: null }
+        error: { disable: false, printStackTrace: false, customHandler: null },
+        external: {
+            OASBearerJWT: {
+                checkOwnership: async (decoded, paramName, paramValue) => {
+                    return await Actor.findOne({ [paramName]: paramValue }).then(actor => actor?.email === decoded?.email);
+                }
+            }
+        }
     }
 }

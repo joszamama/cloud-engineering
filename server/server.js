@@ -3,6 +3,7 @@ import express from "express";
 import I18n from "./middleware/I18n.js";
 import config from "./oastools.config.js";
 import { initialize, use } from "@oas-tools/core";
+import { OASBearerJWT } from "@oas-tools/auth/middleware";
 
 const deploy = async () => {
     const serverPort = process.env.PORT || 8080;
@@ -11,6 +12,7 @@ const deploy = async () => {
     app.use(express.json({limit: '50mb'}));
     
     use(I18n);
+    use(OASBearerJWT, config.middleware.external.OASBearerJWT, 2)
     use((_req, res, next) => {res.header("Content-Type", "application/json"); next();});
     initialize(app, config).then(() => {
         http.createServer(app).listen(serverPort, () => {
