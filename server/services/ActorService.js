@@ -135,7 +135,7 @@ export function explorersInPeriod(req, res) {
         {
             $match: {
                 'applications.status': 'ACCEPTED',
-                'applications.moment': {
+                'applications.updatedAt': {
                     $gte: new Date(startDate),
                     $lt: new Date(endDate)
                 }

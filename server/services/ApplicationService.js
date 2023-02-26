@@ -2,7 +2,7 @@ import Application from '../models/Application.js';
 
 export function getApplication(req, res) {
 
-    Application.find({}, null, { sort: { status: 1 } }).then(applications => {
+    Application.find({}, null, { sort: { actor: 1, status: 1 } }).then(applications => {
         res.send(applications.map(application => application.cleanup()));
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

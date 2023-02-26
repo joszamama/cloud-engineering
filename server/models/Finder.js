@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { Trip } from "./Trip.js";
 
+let TripCacheSchema = Trip.clone()
+TripCacheSchema.clearIndexes()
+
 const FinderSchema = new mongoose.Schema({
     keyword: { type: String },
     priceFrom: { type: Number },
@@ -17,7 +20,7 @@ const FinderSchema = new mongoose.Schema({
         }
     },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    result: [Trip]
+    result: [TripCacheSchema]
 }, { timestamps: true });
 
 FinderSchema.methods.cleanup = function () {
