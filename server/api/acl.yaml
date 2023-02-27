@@ -1,0 +1,19 @@
+explorer:
+  api/v1/actors/{_id}:
+    read:own : ["*"]
+    
+manager:
+  api/v1/actors/{_id}:
+    read:own : ["*"]
+
+administrator:
+  api/v1/actors:
+    read:any : ["*"]
+  api/v1/actors/{_id}:
+    read:any : ["*"]
+    update:any : ["*"]
+    delete:any : ["*"]
+
+sponsor:
+  api/v1/actors/{_id}:
+    read:own : ["*"]
