@@ -4,10 +4,8 @@ info:
   title: ACME Explorer
   description: Projecto para la asignatura de Cloud Engineering 
 
-security:
-  - apikey: []
-  
 paths:
+  /api/v1/login: {$ref: resources/actor.yaml#/paths/api-v1-login}
   /api/v1/actors: {$ref: resources/actor.yaml#/paths/api-v1-actors}
   /api/v1/actors/{_id}: {$ref: resources/actor.yaml#/paths/api-v1-actors-id}
   /api/v2/actors/explorersInPeriod: {$ref: resources/actor.yaml#/paths/api-v1-actors-explorersInPeriod}

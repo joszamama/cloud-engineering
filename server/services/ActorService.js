@@ -1,6 +1,22 @@
 import Actor from '../models/Actor.js';
 import Trip from '../models/Trip.js';
+import admin from 'firebase-admin';
 import mongoose from 'mongoose';
+
+export function login(_req, res) {
+    const { email, password } = res.locals.oas?.body;
+    Actor.findOne({ email }).then(async actor => {
+        if (!actor) return res.status(404).send({ message: "Actor not found" });
+        if (!actor.authenticate(password)) return res.status(401).send({ message: "Invalid password" });
+        admin.auth().createCustomToken(email, { email, role: actor.role, language: actor.preferredLanguage }).then(token => {
+            res.status(201).send(token);
+        })
+    }).catch(err => {
+        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
+        });
+    });
+}
 
 export function getActor(req, res) {
     Actor.find().then(actors => {
@@ -13,12 +29,8 @@ export function getActor(req, res) {
 }
 
 export function addActor(req, res) {
-    Actor.create(req.body).then(actor => {
-        res.send(actor.cleanup());
-    }).catch(err => {
-        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message
-        });
+    Actor.create(req.body).then(() => {
+        res.status(201).send();
     });
 }
 

@@ -1,6 +1,5 @@
 import Finder from '../models/Finder.js';
 import Configuration from '../models/Configuration.js';
-import { getConfig } from './ConfigurationService.js';
 
 export function getFinder(req, res) {
     Finder.find().then(finders => {

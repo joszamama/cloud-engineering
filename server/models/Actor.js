@@ -34,6 +34,10 @@ ActorSchema.methods.cleanup = function() {
     };
 }
 
+ActorSchema.methods.authenticate = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
+
 ActorSchema.pre('save', function(next) {
     if (!this.isModified('password')) {
       return next();

@@ -1,5 +1,5 @@
-import { bearerJwt } from "@oas-tools/auth/handlers";
 import Actor from "./models/Actor.js";
+import admin from "firebase-admin";
 
 export default {
     packageJSON: "package.json",
@@ -17,10 +17,13 @@ export default {
         security: { 
             disable: false, 
             auth: { 
-                apikey: bearerJwt({issuer: process.env.JWT_ISSUER ?? "default", secret: process.env.JWT_SECRET ?? "default"})
-            } 
+                apikey: async (token) => {
+                    return await admin.auth().verifyIdToken(token.replace("Bearer ", ""))
+                    .then(decodedToken => decodedToken)
+                }
+            }
         },
-        swagger: { disable: false, path: "/", ui: { customCss: null, customJs: null } },
+        swagger: { disable: false, path: "/docs", ui: { customCss: null, customJs: null } },
         error: { disable: false, printStackTrace: false, customHandler: null },
         external: {
             OASBearerJWT: {

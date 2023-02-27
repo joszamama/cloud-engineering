@@ -2,6 +2,7 @@ paths:
   api-v1-config:
     x-router-controller: ConfigurationController
     get:
+      security: [apikey: []]
       tags: [ Configuration ]
       description: Return configuration
       operationId: getConfig
@@ -19,6 +20,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     put:
+      security: [apikey: []]
       tags: [ Configuration ]
       description: Updates configuration
       operationId: updateConfig

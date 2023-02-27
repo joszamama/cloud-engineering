@@ -1,7 +1,40 @@
 paths:
+  api-v1-login:
+    x-router-controller: ActorController
+    post:
+      tags: [ Actors ]
+      description: Returns a JWT token for the actor
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+        description: Actor to be logged in
+        required: true
+      responses:
+        201:
+          description: Actor registered
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
   api-v1-actors:
     x-router-controller: ActorController
     get:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Returns all actors
       operationId: getActor
@@ -43,6 +76,7 @@ paths:
   api-v1-actors-explorersInPeriod:
     x-router-controller: ActorController
     get:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Returns the number of explorers in a period that match the comparison criteria with the arbitrary money value
       operationId: explorersInPeriod
@@ -90,6 +124,7 @@ paths:
   api-v1-actors-id:
     x-router-controller: ActorController
     get:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Returns a single actor by its _id
       operationId: findBy_id
@@ -114,6 +149,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     put:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Update a actor based on its _id
       operationId: updateActor
@@ -141,6 +177,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     delete:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Deletes a single actor based on its _id
       operationId: deleteActor
@@ -163,6 +200,7 @@ paths:
   api-v1-actors-id-moneyInPeriod:
     x-router-controller: ActorController
     get:
+      security: [apikey: []]
       tags: [ Actors ]
       description: Returns the money earned by an actor in a period
       operationId: moneyInPeriod
@@ -234,7 +272,6 @@ schemas:
         type: boolean
       preferredLanguage:
         type: string
-        enum: [Español, English]
       managedTrips:
         type: array
         items:

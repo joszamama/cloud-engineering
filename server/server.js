@@ -11,9 +11,12 @@ const deploy = async () => {
     const app = express();
     app.use(express.json({limit: '50mb'}));
     
-    use(I18n);
-    use(OASBearerJWT, config.middleware.external.OASBearerJWT, 2)
-    use((_req, res, next) => {res.header("Content-Type", "application/json"); next();});
+    /* External middlewares */
+    use(function ContentType(_req, res, next) {res.header("Content-Type", "application/json"); next();}, {}, 1);
+    use(I18n, {}, 2);
+    use(OASBearerJWT, config.middleware.external.OASBearerJWT, 4)
+
+    /* OAS Tools initialization */
     initialize(app, config).then(() => {
         http.createServer(app).listen(serverPort, () => {
         console.log("\nApp running at http://localhost:" + serverPort);

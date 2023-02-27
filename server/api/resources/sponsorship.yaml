@@ -2,6 +2,7 @@ paths:
   api-v1-sponsorships:
     x-router-controller: SponsorshipController
     get:
+      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Returns all sponsorships
       operationId: getSponsorship
@@ -21,6 +22,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     post:
+      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Creates a new sponsorship
       operationId: addSponsorship
@@ -43,6 +45,7 @@ paths:
   api-v1-sponsorships-id:
     x-router-controller: SponsorshipController
     get:
+      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Returns a single sponsorship by its _id
       operationId: findSponsorshipBy_id
@@ -67,6 +70,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     put:
+      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Update a sponsorship based on its _id
       operationId: updateSponsorship
@@ -94,6 +98,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     delete:
+      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Deletes a single sponsorship based on its _id
       operationId: deleteSponsorship

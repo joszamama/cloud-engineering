@@ -2,6 +2,7 @@ paths:
   api-v1-trips:
     x-router-controller: TripController
     get:
+      security: [apikey: []]
       tags: [Trips]
       description: Returns all trips
       operationId: getTrip
@@ -33,6 +34,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     post:
+      security: [apikey: []]
       tags: [Trips]
       description: Creates a new trip
       operationId: addTrip
@@ -55,6 +57,7 @@ paths:
   api-v1-trips-ticker:
     x-router-controller: TripController
     get:
+      security: [apikey: []]
       tags: [Trips]
       description: Returns a single trip by its ticker
       operationId: findByTicker
@@ -79,6 +82,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     put:
+      security: [apikey: []]
       tags: [Trips]
       description: Update a trip based on its ticker
       operationId: updateTrip
@@ -106,6 +110,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     delete:
+      security: [apikey: []]
       tags: [Trips]
       description: Deletes a single trip based on its ticker
       operationId: deleteTrip

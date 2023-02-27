@@ -1,7 +1,6 @@
 import Trip from "../models/Trip.js";
 
 export function getTrip(req, res) {
-    
     if (res.locals.oas.params.search) {
         const regex = new RegExp(res.locals.oas.params.search, "i");
 

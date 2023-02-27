@@ -2,6 +2,7 @@ paths:
   api-v1-applications:
     x-router-controller: ApplicationController
     get:
+      security: [apikey: []]
       tags: [Applications]
       description: Returns all applications
       operationId: getApplication
@@ -21,6 +22,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     post:
+      security: [apikey: []]
       tags: [Applications]
       description: Creates a new application
       operationId: addApplication
@@ -43,6 +45,7 @@ paths:
   api-v1-applications-id:
     x-router-controller: ApplicationController
     get:
+      security: [apikey: []]
       tags: [Applications]
       description: Returns a single application by its _id
       operationId: findApplicationBy_id
@@ -67,6 +70,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     put:
+      security: [apikey: []]
       tags: [Applications]
       description: Update a application based on its _id
       operationId: updateApplication
@@ -94,6 +98,7 @@ paths:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
     delete:
+      security: [apikey: []]
       tags: [Applications]
       description: Deletes a single application based on its _id
       operationId: deleteApplication

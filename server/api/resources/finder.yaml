@@ -2,6 +2,7 @@ paths:
   api-v1-finders:
     x-router-controller: FinderController
     get:
+      security: [apikey: []]
       tags: [ Finders ]
       description: Returns all finders
       operationId: getFinder
@@ -21,6 +22,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     post:
+      security: [apikey: []]
       tags: [ Finders ]
       description: Creates a new finder
       operationId: addFinder
@@ -43,6 +45,7 @@ paths:
   api-v1-finders-id:
     x-router-controller: FinderController
     get:
+      security: [apikey: []]
       tags: [ Finders ]
       description: Returns a single finder by its _id
       operationId: findFinderBy_id
@@ -67,6 +70,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     put:
+      security: [apikey: []]
       tags: [ Finders ]
       description: Update a finder based on its _id
       operationId: updateFinder
@@ -94,6 +98,7 @@ paths:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     delete:
+      security: [apikey: []]
       tags: [ Finders ]
       description: Deletes a single finder based on its _id
       operationId: deleteFinder

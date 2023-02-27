@@ -7,21 +7,31 @@ export default class I18n extends OASBase {
     }
 
     static initialize(oasDoc, config) {
-        function getStatusMessage(language, code) {
+        function translate(language, key) {
             const filePath = `./api/i18n/status.${language?.slice(0,2).toLowerCase() ?? "en"}.json`;
-            const data = fs.readFileSync(filePath, "utf-8");
-            return JSON.parse(data)[code];
+            if (fs.existsSync(filePath)) {
+                const data = fs.readFileSync(filePath, "utf-8");
+                return JSON.parse(data)[key];
+            }
         }
 
-        return new I18n(oasDoc, (_req, res, next) => {
-            const language = res.locals.oas.security?.apikey.language;
+        return new I18n(oasDoc, (req, res, next) => {
+            const language = res.locals.oas.security?.apikey?.language ?? req.acceptsLanguages()[0];
             const oldSend = res.send;
 
             res.send = (body) => {
-                const data = JSON.parse(body);
-                if (data.message) data.message = getStatusMessage(language, res.statusCode);
-                oldSend.call(res, JSON.stringify(data));
+                if (body) {
+                    const data = typeof body === "string" ? JSON.parse(body) : body;
+                    if (data.message) data.message = translate(language, res.statusCode) ?? data.message;
+                    if (data.error) data.error = translate(language, res.statusCode) ?? data.error;
+                    oldSend.call(res, JSON.stringify(data));
+                } else {
+                    oldSend.call(res, body);
+                }
             }
+
+            /* Overrides send for error handler, too */
+            res.defaultSend = res.send;
 
             next();
         });
