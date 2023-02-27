@@ -31,6 +31,11 @@ export function getActor(req, res) {
 export function addActor(req, res) {
     Actor.create(req.body).then(() => {
         res.status(201).send();
+    }).catch(err => {
+        console.log(err)
+        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
+        });
     });
 }
 

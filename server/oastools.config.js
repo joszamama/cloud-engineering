@@ -1,5 +1,4 @@
-import Actor from "./models/Actor.js";
-import admin from "firebase-admin";
+import * as auth from "./utils/auth.js";
 
 export default {
     packageJSON: "package.json",
@@ -16,21 +15,12 @@ export default {
         validator: { requestValidation: true, responseValidation: true, strict: false },
         security: { 
             disable: false, 
-            auth: { 
-                apikey: async (token) => {
-                    return await admin.auth().verifyIdToken(token.replace("Bearer ", ""))
-                    .then(decodedToken => decodedToken)
-                }
-            }
+            auth: { apikey: (token) => auth.verifyIdToken(token) }
         },
         swagger: { disable: false, path: "/docs", ui: { customCss: null, customJs: null } },
         error: { disable: false, printStackTrace: false, customHandler: null },
         external: {
-            OASBearerJWT: {
-                checkOwnership: async (decoded, paramName, paramValue) => {
-                    return await Actor.findOne({ [paramName]: paramValue }).then(actor => actor?.email === decoded?.email);
-                }
-            }
+            OASBearerJWT: { checkOwnership: (decoded, paramName, paramValue) => auth.checkOwnership(decoded, paramName, paramValue) }
         }
     }
 }

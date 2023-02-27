@@ -52,6 +52,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: applicationId
           description: _id of the application to fetch
           in: path
           schema:
@@ -77,6 +78,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: applicationId
           description: _id of the application to update
           in: path
           schema:
@@ -105,6 +107,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: applicationId
           description: _id of the application to delete
           in: path
           schema:

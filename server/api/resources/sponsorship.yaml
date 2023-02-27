@@ -52,6 +52,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: sponsorshipId
           description: _id of the sponsorship to fetch
           in: path
           schema:
@@ -77,6 +78,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: sponsorshipId
           description: _id of the sponsorship to update
           in: path
           schema:
@@ -105,6 +107,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: sponsorshipId
           description: _id of the sponsorship to delete
           in: path
           schema:
