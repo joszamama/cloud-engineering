@@ -6,6 +6,13 @@ paths:
       tags: [Applications]
       description: Returns all applications
       operationId: getApplication
+      parameters:
+        - name: actor
+          x-acl-binding: applicationActor
+          in: query
+          description: Actor of the application
+          schema:
+            type: string
       responses:
         200:
           description: Application list
@@ -121,7 +128,30 @@ paths:
             application/json:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
-
+  api-v1-applications-id-pay:
+    x-router-controller: ApplicationController
+    patch:
+      security: [apikey: []]
+      tags: [Applications]
+      description: Pay a single application based on its _id
+      operationId: payApplication
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: applicationId
+          description: _id of the application to pay
+          in: path
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Application paid
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
 schemas:
   application:
     type: object
@@ -142,7 +172,7 @@ schemas:
         default: PENDING
       rejectReason:
         type: string
-      rejectComment:
+      comments:
         type: string
       actor:
         type: string

@@ -2,7 +2,6 @@ paths:
   api-v1-trips:
     x-router-controller: TripController
     get:
-      security: [apikey: []]
       tags: [Trips]
       description: Returns all trips
       operationId: getTrip
@@ -57,7 +56,6 @@ paths:
   api-v1-trips-ticker:
     x-router-controller: TripController
     get:
-      security: [apikey: []]
       tags: [Trips]
       description: Returns a single trip by its ticker
       operationId: findByTicker

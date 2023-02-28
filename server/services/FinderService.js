@@ -33,7 +33,7 @@ export function findFinderBy_id(req, res) {
 }
 
 export function updateFinder(req, res) {
-    Finder.findByIdAndUpdate(req.params.finderId, req.body, { new: true }).then(finder => {
+    Finder.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(finder => {
         if (!finder) return res.status(404).send({ message: "Finder Not Found" });
         res.send(finder.cleanup());
     }

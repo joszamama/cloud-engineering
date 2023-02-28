@@ -21,6 +21,7 @@ const TripSchema = new mongoose.Schema({
     pictures: { type: [Buffer], required: [true, "can't be blank"] },
     cancelled: { type: Boolean, default: false },
     cancelReason: { type: String },
+    isPublished: { type: Boolean, default: false },
     stages: [Stage],
     manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
     sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
@@ -39,10 +40,11 @@ TripSchema.methods.cleanup = function () {
         pictures: this.pictures,
         cancelled: this.cancelled,
         cancelReason: this.cancelReason,
+        isPublished: this.isPublished,
         stages: this.stages,
         manager: this.manager,
         sponsorships: this.sponsorships,
-        applications: this.applications
+        applications: this.applications,
     };
 }
 

@@ -29,13 +29,11 @@ export function getActor(req, res) {
 }
 
 export function addActor(req, res) {
-    Actor.create(req.body).then(() => {
+    Actor.create({ ...res.locals.oas.body, role: "Explorer" }).then(() => {
         res.status(201).send();
     }).catch(err => {
-        console.log(err)
-        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message
-        });
+        if (err.message?.includes("duplicate key")) return res.status(409).send({ message: "Actor already exists" });
+        else res.status(500).send({ message: err.message });
     });
 }
 
@@ -51,9 +49,9 @@ export function findBy_id(req, res) {
 }
 
 export function updateActor(req, res) {
-    Actor.findByIdAndUpdate(req.params.actorId, req.body, { new: true }).then(async actor => {
+    Actor.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
-        res.send(actor.cleanup());
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

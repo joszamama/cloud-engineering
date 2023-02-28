@@ -32,7 +32,7 @@ export function findStageBy_id(req, res) {
 }
 
 export function updateStage(req, res) {
-    Stage.findByIdAndUpdate(req.params.stageId, req.body, { new: true }).then(stage => {
+    Stage.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(stage => {
         if (!stage) return res.status(404).send({ message: "Stage Not Found" });
         res.send(stage.cleanup());
     }

@@ -1,19 +1,46 @@
 Explorer:
   api/v1/actors/{_id}:
-    read:own : ["*"]
-    
+    read:own: ["*"]
+  api/v1/applications:
+    read:own: ["*"]
+    create:any: ["*"]
+  api/v1/applications/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+  api/v1/applications/{_id}/pay: # This may be redundant
+    update:own: ["*"]
+
 Manager:
   api/v1/actors/{_id}:
-    read:own : ["*"]
+    read:own: ["*"]
+  api/v1/applications/{_id}:
+    read:own: ["*"]
+    update:own: ["*"] # Can manage applications of his own trips
+  api/v1/trips:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/trips/{_id}:
+    read:any: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
+  
 
 Administrator:
   api/v1/actors:
-    read:any : ["*"]
+    read:any: ["*"]
   api/v1/actors/{_id}:
-    read:any : ["*"]
-    update:any : ["*"]
-    delete:any : ["*"]
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/applications:
+    read:any: ["*"]
+  api/v1/applications/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  /api/v1/dashboard:
+    read:any: ["*"]
 
 Sponsor:
   api/v1/actors/{_id}:
-    read:own : ["*"]
+    read:own: ["*"]
