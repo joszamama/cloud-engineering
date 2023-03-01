@@ -1,3 +1,9 @@
+Anonymous:
+  api/v1/login:
+    create:any: ["*"]
+  api/v1/actors:
+    create:any: ["*"]
+
 Explorer:
   api/v1/actors/{_id}:
     read:own: ["*"]
@@ -9,6 +15,12 @@ Explorer:
     update:own: ["*"]
   api/v1/applications/{_id}/pay: # This may be redundant
     update:own: ["*"]
+  api/v1/finders:
+    create:any: ["*"]
+  api/v1/finders/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
 
 Manager:
   api/v1/actors/{_id}:
@@ -28,6 +40,7 @@ Manager:
 Administrator:
   api/v1/actors:
     read:any: ["*"]
+    create:any: ["*"]
   api/v1/actors/{_id}:
     read:any: ["*"]
     update:any: ["*"]
@@ -38,9 +51,30 @@ Administrator:
     read:any: ["*"]
     update:any: ["*"]
     delete:any: ["*"]
-  /api/v1/dashboard:
+  api/v1/dashboard:
     read:any: ["*"]
+  api/v1/config:
+    read:any: ["*"]
+    update:any: ["*"]
+  api/v2/actors/explorersInPeriod:
+    read:any: ["*"]
+  api/v2/actors/{_id}/moneyInPeriod:
+    read:any: ["*"]
+  api/v1/finders:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/finders/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+
 
 Sponsor:
   api/v1/actors/{_id}:
     read:own: ["*"]
+  api/v1/sponsorships:
+    create:any: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]

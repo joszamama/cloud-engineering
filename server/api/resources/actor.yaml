@@ -3,6 +3,7 @@ paths:
     x-router-controller: ActorController
     post:
       tags: [ Actors ]
+      security: [apikey: []]
       description: Returns a JWT token for the actor
       operationId: login
       requestBody:
@@ -20,7 +21,7 @@ paths:
         required: true
       responses:
         201:
-          description: Actor registered
+          description: Actor logged in
           content:
             application/json:
               schema:
@@ -55,6 +56,7 @@ paths:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
     post:
       tags: [ Actors ]
+      security: [apikey: []]
       description: Creates a new actor
       operationId: addActor
       requestBody:
@@ -73,7 +75,7 @@ paths:
               application/json:
                 schema:
                   $ref: '../oas-doc.yaml#/components/schemas/error'
-  api-v1-actors-explorersInPeriod:
+  api-v2-actors-explorersInPeriod:
     x-router-controller: ActorController
     get:
       security: [apikey: []]
@@ -200,7 +202,7 @@ paths:
             application/json:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
-  api-v1-actors-id-moneyInPeriod:
+  api-v2-actors-id-moneyInPeriod:
     x-router-controller: ActorController
     get:
       security: [apikey: []]

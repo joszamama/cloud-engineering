@@ -60,7 +60,7 @@ var flushPeriod;
 export async function updateConfig() {
     console.log('Updating config...');
     config = await Configuration.find({})[0]
-    flushPeriod = config.flush_period * 3600 * 1000;
+    flushPeriod = config?.flush_period * 3600 * 1000 || 3600 * 1000;
 }
 
 async () => {

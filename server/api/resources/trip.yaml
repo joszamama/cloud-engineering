@@ -53,22 +53,22 @@ paths:
             application/json:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
-  api-v1-trips-ticker:
+  api-v1-trips-id:
     x-router-controller: TripController
     get:
       tags: [Trips]
-      description: Returns a single trip by its ticker
-      operationId: findByTicker
+      description: Returns a single trip by its _id
+      operationId: findBy_id
       parameters:
         - required: true
-          name: ticker
-          description: ticker of the trip to fetch
+          name: _id
+          description: _id of the trip to fetch
           in: path
           schema:
             type: string
       responses:
         200:
-          description: Trip found by ticker
+          description: Trip found by _id
           content:
             application/json:
               schema:
@@ -82,12 +82,12 @@ paths:
     put:
       security: [apikey: []]
       tags: [Trips]
-      description: Update a trip based on its ticker
+      description: Update a trip based on its _id
       operationId: updateTrip
       parameters:
         - required: true
-          name: ticker
-          description: ticker of the trip to update
+          name: _id
+          description: _id of the trip to update
           in: path
           schema:
             type: string
@@ -110,12 +110,12 @@ paths:
     delete:
       security: [apikey: []]
       tags: [Trips]
-      description: Deletes a single trip based on its ticker
+      description: Deletes a single trip based on its _id
       operationId: deleteTrip
       parameters:
         - required: true
-          name: ticker
-          description: ticker of the trip to delete
+          name: _id
+          description: _id of the trip to delete
           in: path
           schema:
             type: string

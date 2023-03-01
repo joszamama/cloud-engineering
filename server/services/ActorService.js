@@ -29,7 +29,12 @@ export function getActor(req, res) {
 }
 
 export function addActor(req, res) {
-    Actor.create({ ...res.locals.oas.body, role: "Explorer" }).then(() => {
+    let role = res.locals.oas.security?.apikey?.role
+    console.log("Oas body: ", role);
+
+    if (![ "Anonymous", "Administrator" ].includes(role)) return res.status(403).send({ message: "Forbidden" });
+    
+    Actor.create({ ...res.locals.oas.body, role: role === "Anonymous" ? "Explorer" : "Manager" }).then(() => {
         res.status(201).send();
     }).catch(err => {
         if (err.message?.includes("duplicate key")) return res.status(409).send({ message: "Actor already exists" });
@@ -49,6 +54,7 @@ export function findBy_id(req, res) {
 }
 
 export function updateActor(req, res) {
+    if (res.locals.oas.security?.apikey?.role !== "Administrator") delete req.body.banned
     Actor.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
         res.status(204).send();

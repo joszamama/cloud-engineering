@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Sponsorship from "./Sponsorship.js";
 import { Stage } from "./Stage.js";
 
 const TripSchema = new mongoose.Schema({
@@ -28,7 +29,12 @@ const TripSchema = new mongoose.Schema({
     applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
 }, { timestamps: true });
 
-TripSchema.methods.cleanup = function () {
+TripSchema.methods.cleanup = async function () {
+
+    this.sponsorships = await Sponsorship.find({ _id: { $in: this.sponsorships }, isPaid: true }).exec();
+    let randomIndex = Math.floor(Math.random() * this.sponsorships.length)
+    this.sponsorships = this.sponsorships[randomIndex]
+
     return {
         ticker: this.ticker,
         title: this.title,

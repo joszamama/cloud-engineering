@@ -8,8 +8,8 @@ export function addTrip(req, res) {
     service.addTrip(req, res);
 }
 
-export function findByTicker(req, res) {
-    service.findByTicker(req, res);
+export function findBy_id(req, res) {
+    service.findById(req, res);
 }
 
 export function updateTrip(req, res) {

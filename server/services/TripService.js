@@ -8,16 +8,22 @@ export function getTrip(req, res) {
         if (res.locals.oas.params.exactMatch) {
             Trip.find({ $text: { $search: regex, $language: "none" } }, { score: { $meta: "textScore" } })
                 .sort({ score: { $meta: 'textScore' } }).exec()
-                .then(trips => {
-                    res.send(trips.map(trip => trip.cleanup()));
+                .then(async trips => {
+                    let tripsPromises = trips.map(async trip => await trip.cleanup());
+                    Promise.all(tripsPromises).then(trips => {
+                        res.send(trips);
+                    });
                 }).catch(err => {
                     res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
                         message: err.message
                     });
                 });
         } else {
-            Trip.find({ $or: [{ ticker: { $regex: regex } }, { title: { $regex: regex } }, { description: { $regex: regex } }] },).then(trips => {
-                res.send(trips.map(trip => trip.cleanup()));
+            Trip.find({ $or: [{ ticker: { $regex: regex } }, { title: { $regex: regex } }, { description: { $regex: regex } }] },).then(async trips => {
+                let tripsPromises = trips.map(async trip => await trip.cleanup());
+                Promise.all(tripsPromises).then(trips => {
+                    res.send(trips);
+                });
             }).catch(err => {
                 res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
                     message: err.message
@@ -26,7 +32,10 @@ export function getTrip(req, res) {
         }
     } else {
         Trip.find().then(trips => {
-            res.send(trips.map(trip => trip.cleanup()));
+            let tripsPromises = trips.map(async trip => await trip.cleanup());
+            Promise.all(tripsPromises).then(trips => {
+                res.send(trips);
+            });
         }).catch(err => {
             res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
                 message: err.message
@@ -36,8 +45,8 @@ export function getTrip(req, res) {
 }
 
 export function addTrip(req, res) {
-    Trip.create(req.body).then(trip => {
-        res.send(trip.cleanup());
+    Trip.create(req.body).then(async trip => {
+        res.send(await trip.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
@@ -45,10 +54,10 @@ export function addTrip(req, res) {
     });
 }
 
-export function findByTicker(req, res) {
-    Trip.findOne({ ticker: req.params.ticker }).then(trip => {
+export function findById(req, res) {
+    Trip.findOne({ _id: req.params._id }).then(async trip => {
         if (!trip) return res.status(404).send({ message: "Trip not found" });
-        res.send(trip.cleanup());
+        res.send(await trip.cleanup());
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
@@ -67,7 +76,7 @@ export function updateTrip(req, res) {
             } else {
                 return res.status(400).send({ message: "Trip cannot be modified after being published" });
             }
-        }    
+        }
         await trip.save();
         res.status(204).send();
     }).catch(err => {
@@ -78,7 +87,7 @@ export function updateTrip(req, res) {
 }
 
 export function deleteTrip(req, res) {
-    Trip.findById(req.params.tripId).then(async trip => {
+    Trip.findById(req.params._id).then(async trip => {
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         if (trip.isPublished) return res.status(400).send({ message: "Trip cannot be modified after being published" });
         await trip.delete();

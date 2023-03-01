@@ -8,6 +8,7 @@ import Trip from "../models/Trip.js";
 export async function verifyIdToken(token) {
     const regex = /^Bearer\s/;
     if (regex.test(token)) {
+        if (token === "Bearer anonymous") return { role: "Anonymous" };
         return await admin.auth().verifyIdToken(token.replace(regex, ""))
             .then(decodedToken => decodedToken)
             .catch(error => { throw new SecurityError(error) });
@@ -32,9 +33,9 @@ export async function checkOwnership(decoded, paramName, paramValue) {
         case "ticker":
             return await Trip.findById(paramValue).then(trip => trip?.manager?.email === decoded?.email) ?? false;
         case "finderId":
-            return false; //TODO implement
+            return await Actor.findOne({ email: decoded?.email }).then(actor => actor.finders.includes(paramValue)) ?? false;
         case "sponsorshipId":
-            return false; //TODO implement
+            return await Actor.findOne({ email: decoded?.email }).then(actor => actor.sponsorships.includes(paramValue)) ?? false;
         default:
             return false;
     }

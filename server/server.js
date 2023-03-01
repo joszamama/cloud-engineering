@@ -14,7 +14,8 @@ const deploy = async () => {
     /* External middlewares */
     use(function ContentType(_req, res, next) {res.header("Content-Type", "application/json"); next();}, {}, 1);
     use(I18n, {}, 2);
-    use(OASBearerJWT, config.middleware.external.OASBearerJWT, 4)
+    use(function anonymousToken(req, res, next) { req.headers.authorization = req.headers.authorization ?? "Bearer anonymous"; next();}, {}, 3);
+    use(OASBearerJWT, config.middleware.external.OASBearerJWT, 5)
 
     /* OAS Tools initialization */
     initialize(app, config).then(() => {
