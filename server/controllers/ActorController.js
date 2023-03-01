@@ -1,5 +1,9 @@
 import * as service from '../services/ActorService.js';
 
+export function login(req, res) {
+    service.login(req, res);
+}
+
 export function getActor(req, res) {
     service.getActor(req, res);
 }

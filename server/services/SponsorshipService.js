@@ -32,7 +32,7 @@ export function findSponsorshipBy_id(req, res) {
 }
 
 export function updateSponsorship(req, res) {
-    Sponsorship.findByIdAndUpdate(req.params.sponsorshipId, req.body, { new: true }).then(sponsorship => {
+    Sponsorship.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(sponsorship => {
         if (!sponsorship) return res.status(404).send({ message: "Sponsorship Not Found" });
         res.send(sponsorship.cleanup());
     }).catch(err => {

@@ -2,6 +2,7 @@ paths:
   api-v1-dashboard:
     x-router-controller: DashboardController
     get:
+      security: [apikey: []]
       tags: [ Dashboard ]
       description: Returns the dashboard
       operationId: getDashboard

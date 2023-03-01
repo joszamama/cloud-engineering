@@ -1,9 +1,16 @@
 import server from './server.js';
 import mongoose from 'mongoose';
 import Configuration from './models/Configuration.js';
+import admin from "firebase-admin";
 
 const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'production';
 console.log("Env: ", env)
+
+// Your web app's Firebase configuration
+const firebaseConfig = JSON.parse(Buffer.from(process.env.FIREBASE_CREDENTIALS, 'base64').toString());
+
+// Initialize Firebase
+admin.initializeApp({credential: admin.credential.cert(firebaseConfig)})
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {

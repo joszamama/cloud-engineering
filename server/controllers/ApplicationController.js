@@ -16,6 +16,10 @@ export function updateApplication(req, res) {
     service.updateApplication(req, res);
 }
 
+export function payApplication(req, res) {
+    service.payApplication(req, res);
+}
+
 export function deleteApplication(req, res) {
     service.deleteApplication(req, res);
 }

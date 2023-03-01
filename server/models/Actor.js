@@ -10,7 +10,7 @@ const ActorSchema = new mongoose.Schema({
     phone: {type: String, required: [true, "can't be blank"]},
     address: {type: String, required: [true, "can't be blank"]},
     banned: {type: Boolean, default: false},
-    preferredLanguage: {type: String, enum:["English", "Español"], default: "English"},
+    preferredLanguage: {type: String, default: "English"},
     managedTrips: [{type: mongoose.Schema.Types.ObjectId, ref: 'Trip'}],
     applications: [{type: mongoose.Schema.Types.ObjectId, ref: 'Application'}],
     sponsorships: [{type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship'}],
@@ -32,6 +32,10 @@ ActorSchema.methods.cleanup = function() {
         ...(this.role === "Explorer" ? {applications: this.applications, finders: this.finders} : {}),
         ...(this.role === "Sponsor" ? {sponsorships: this.sponsorships} : {})
     };
+}
+
+ActorSchema.methods.authenticate = function(password) {
+    return bcrypt.compareSync(password, this.password);
 }
 
 ActorSchema.pre('save', function(next) {

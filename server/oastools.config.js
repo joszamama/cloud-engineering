@@ -1,4 +1,4 @@
-import { bearerJwt } from "@oas-tools/auth/handlers";
+import * as auth from "./utils/auth.js";
 
 export default {
     packageJSON: "package.json",
@@ -15,11 +15,12 @@ export default {
         validator: { requestValidation: true, responseValidation: true, strict: false },
         security: { 
             disable: false, 
-            auth: { 
-                apikey: bearerJwt({issuer: process.env.JWT_ISSUER ?? "default", secret: process.env.JWT_SECRET ?? "default"})
-            } 
+            auth: { apikey: (token) => auth.verifyIdToken(token) }
         },
-        swagger: { disable: false, path: "/", ui: { customCss: null, customJs: null } },
-        error: { disable: false, printStackTrace: false, customHandler: null }
+        swagger: { disable: false, path: "/docs", ui: { customCss: null, customJs: null } },
+        error: { disable: false, printStackTrace: false, customHandler: null },
+        external: {
+            OASBearerJWT: { checkOwnership: (decoded, paramName, paramValue) => auth.checkOwnership(decoded, paramName, paramValue) }
+        }
     }
 }

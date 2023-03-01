@@ -1,6 +1,22 @@
 import Actor from '../models/Actor.js';
 import Trip from '../models/Trip.js';
+import admin from 'firebase-admin';
 import mongoose from 'mongoose';
+
+export function login(_req, res) {
+    const { email, password } = res.locals.oas?.body;
+    Actor.findOne({ email }).then(async actor => {
+        if (!actor) return res.status(404).send({ message: "Actor not found" });
+        if (!actor.authenticate(password)) return res.status(401).send({ message: "Invalid password" });
+        admin.auth().createCustomToken(email, { email, role: actor.role, language: actor.preferredLanguage }).then(token => {
+            res.status(201).send(token);
+        })
+    }).catch(err => {
+        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
+        });
+    });
+}
 
 export function getActor(req, res) {
     Actor.find().then(actors => {
@@ -13,12 +29,16 @@ export function getActor(req, res) {
 }
 
 export function addActor(req, res) {
-    Actor.create(req.body).then(actor => {
-        res.send(actor.cleanup());
+    let role = res.locals.oas.security?.apikey?.role
+    console.log("Oas body: ", role);
+
+    if (![ "Anonymous", "Administrator" ].includes(role)) return res.status(403).send({ message: "Forbidden" });
+    
+    Actor.create({ ...res.locals.oas.body, role: role === "Anonymous" ? "Explorer" : "Manager" }).then(() => {
+        res.status(201).send();
     }).catch(err => {
-        res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message
-        });
+        if (err.message?.includes("duplicate key")) return res.status(409).send({ message: "Actor already exists" });
+        else res.status(500).send({ message: err.message });
     });
 }
 
@@ -34,9 +54,10 @@ export function findBy_id(req, res) {
 }
 
 export function updateActor(req, res) {
-    Actor.findByIdAndUpdate(req.params.actorId, req.body, { new: true }).then(async actor => {
+    if (res.locals.oas.security?.apikey?.role !== "Administrator") delete req.body.banned
+    Actor.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
-        res.send(actor.cleanup());
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
@@ -135,7 +156,7 @@ export function explorersInPeriod(req, res) {
         {
             $match: {
                 'applications.status': 'ACCEPTED',
-                'applications.moment': {
+                'applications.updatedAt': {
                     $gte: new Date(startDate),
                     $lt: new Date(endDate)
                 }

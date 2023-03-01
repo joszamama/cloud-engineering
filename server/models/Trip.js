@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Sponsorship from "./Sponsorship.js";
 import { Stage } from "./Stage.js";
 
 const TripSchema = new mongoose.Schema({
@@ -21,13 +22,19 @@ const TripSchema = new mongoose.Schema({
     pictures: { type: [Buffer], required: [true, "can't be blank"] },
     cancelled: { type: Boolean, default: false },
     cancelReason: { type: String },
+    isPublished: { type: Boolean, default: false },
     stages: [Stage],
     manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
     sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
     applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
 }, { timestamps: true });
 
-TripSchema.methods.cleanup = function () {
+TripSchema.methods.cleanup = async function () {
+
+    this.sponsorships = await Sponsorship.find({ _id: { $in: this.sponsorships }, isPaid: true }).exec();
+    let randomIndex = Math.floor(Math.random() * this.sponsorships.length)
+    this.sponsorships = this.sponsorships[randomIndex]
+
     return {
         ticker: this.ticker,
         title: this.title,
@@ -39,10 +46,11 @@ TripSchema.methods.cleanup = function () {
         pictures: this.pictures,
         cancelled: this.cancelled,
         cancelReason: this.cancelReason,
+        isPublished: this.isPublished,
         stages: this.stages,
         manager: this.manager,
         sponsorships: this.sponsorships,
-        applications: this.applications
+        applications: this.applications,
     };
 }
 

@@ -1,4 +1,5 @@
 import Finder from '../models/Finder.js';
+import Configuration from '../models/Configuration.js';
 
 export function getFinder(req, res) {
     Finder.find().then(finders => {
@@ -32,7 +33,7 @@ export function findFinderBy_id(req, res) {
 }
 
 export function updateFinder(req, res) {
-    Finder.findByIdAndUpdate(req.params.finderId, req.body, { new: true }).then(finder => {
+    Finder.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(finder => {
         if (!finder) return res.status(404).send({ message: "Finder Not Found" });
         res.send(finder.cleanup());
     }
@@ -51,4 +52,26 @@ export function deleteFinder(req, res) {
             message: err.message
         });
     });
+}
+
+var config;
+var flushPeriod;
+
+export async function updateConfig() {
+    console.log('Updating config...');
+    config = await Configuration.find({})[0]
+    flushPeriod = config?.flush_period * 3600 * 1000 || 3600 * 1000;
+}
+
+async () => {
+    await updateConfig();
+    setInterval(async () => {
+        try {
+            let finders = await Finder.find({ createdAt: { $lt: new Date(new Date() - flushPeriod) } })
+            Finder.updateMany({ _id: { $in: finders } }, { $set: { trips: [] } });
+            res.status(201).send('Finders flushed!')
+        } catch (error) {
+            res.status(404).send(error)
+        }
+    }, flushPeriod);
 }

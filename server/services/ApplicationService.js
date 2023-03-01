@@ -1,8 +1,8 @@
 import Application from '../models/Application.js';
+import Trip from '../models/Trip.js';
 
 export function getApplication(req, res) {
-
-    Application.find({}, null, { sort: { status: 1 } }).then(applications => {
+    Application.find(res.locals.oas.params?.actor ? {actor: res.locals.oas.params.actor} : {}, null, { sort: { actor: 1, status: 1 } }).then(applications => {
         res.send(applications.map(application => application.cleanup()));
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
@@ -11,7 +11,13 @@ export function getApplication(req, res) {
     });
 }
 
-export function addApplication(req, res) {
+export async function addApplication(req, res) {
+    const trip = await Trip.findById(res.locals.oas.body?.trip);
+    
+    if (!trip?.isPublished) return res.status(400).send({ message: "The trip you are trying to apply to is not published yet" });
+    if (trip.startDate < new Date()) return res.status(400).send({ message: "The trip you are trying to apply to has already started" });
+    if (trip.cancelled) return res.status(400).send({ message: "The trip you are trying to apply to has been cancelled" });
+
     Application.create(req.body).then(application => {
         res.send(application.cleanup());
     }).catch(err => {
@@ -33,14 +39,22 @@ export function findApplicationBy_id(req, res) {
 }
 
 export function updateApplication(req, res) {
-    Application.findByIdAndUpdate(req.params.applicationId, req.body, { new: true }).then(application => {
+    Application.findByIdAndUpdate(req.params._id, req.body).then(application => {
         if (!application) return res.status(404).send({ message: "Application Not Found" });
         res.send(application.cleanup());
-    }
-    ).catch(err => {
-        return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
-            message: err.message
-        });
+    }).catch(err => {
+        if (err.message === "Invalid application update") return res.status(400).send({ message: err.message });
+        else return res.status(500).send({ message: err.message });
+    });
+}
+
+export function payApplication(req, res) {
+    Application.findByIdAndUpdate(req.params._id, {status: "ACCEPTED"}).then(application => {
+        if (!application) return res.status(404).send({ message: "Application Not Found" });
+        res.status(204).send();
+    }).catch(err => {
+        if (err.message === "Invalid application update") return res.status(400).send({ message: err.message });
+        else return res.status(500).send({ message: err.message });
     });
 }
 
