@@ -1,8 +1,37 @@
 import mongoose from "mongoose";
-import { Trip } from "./Trip.js";
 
-let TripCacheSchema = Trip.clone()
-TripCacheSchema.clearIndexes()
+const StageSchema = new mongoose.Schema({
+    title: {type: String, required: [true, "can't be blank"]},
+    description: {type: String, required: [true, "can't be blank"]},
+    price: {type: Number, required: [true, "can't be blank"]}
+}, {timestamps: true});
+
+const TripSchema = new mongoose.Schema({
+    ticker: { type: String, required: [true, "can't be blank"], match: [/^[0-9]{6}-[A-Z]{4}$/, "is invalid"] },
+    title: { type: String, required: [true, "can't be blank"] },
+    description: { type: String, required: [true, "can't be blank"] },
+    price: Number,
+    requirements: { type: [String], required: [true, "can't be blank"] },
+    startDate: { type: Date, required: [true, "can't be blank"] },
+    endDate: {
+        type: Date,
+        validate: {
+            validator: function (value) {
+                return value > this.startDate;
+            },
+            message: '{VALUE} must be after the start date'
+        },
+        required: [true, "can't be blank"]
+    },
+    pictures: [Buffer],
+    cancelled: { type: Boolean, default: false },
+    cancelReason: { type: String },
+    isPublished: { type: Boolean, default: false },
+    stages: [StageSchema],
+    manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
+    sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
+    applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
+}, { timestamps: true });
 
 const FinderSchema = new mongoose.Schema({
     keyword: { type: String },
@@ -20,7 +49,7 @@ const FinderSchema = new mongoose.Schema({
         }
     },
     actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    result: [TripCacheSchema]
+    result: [TripSchema]
 }, { timestamps: true });
 
 FinderSchema.methods.cleanup = function () {
@@ -96,4 +125,4 @@ FinderSchema.pre('save', function (callback) {
 
 FinderSchema.index({ keyword: "text" })
 
-export default mongoose.model('Finder', FinderSchema)
+export default mongoose.model("Finder", FinderSchema);

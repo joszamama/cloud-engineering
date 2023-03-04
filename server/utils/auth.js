@@ -21,9 +21,6 @@ export async function verifyIdToken(token) {
 export async function checkOwnership(decoded, paramName, paramValue) {
     switch (paramName) {
         case "actorId":
-            console.log("decoded: ", decoded)
-            console.log("paramName: ", paramName)
-            console.log("Param value: ", paramValue)
             return await Actor.findById(paramValue).then(actor => actor?.email === decoded?.email) ?? false;
         case "applicationActor":
             return await Actor.findOne({ email: decoded?.email }).then(actor => paramValue === actor?._id) ?? false;
