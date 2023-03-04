@@ -23,8 +23,10 @@ ApplicationSchema.methods.cleanup = function () {
 }
 
 ApplicationSchema.pre('save', async function () {
-    await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
-    await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+    if (Object.keys(this.getChanges()).includes("createdAt")) { // New application
+        await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
+        await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+    }
 });
 
 ApplicationSchema.pre('findOneAndUpdate', async function (next) {

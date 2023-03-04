@@ -20,8 +20,8 @@ export async function addApplication(req, res) {
 
     res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
     
-    Application.create(res.locals.oas.body).then(application => {
-        res.send(application.cleanup());
+    Application.create(res.locals.oas.body).then(() => {
+        res.status(201).send();
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

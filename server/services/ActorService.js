@@ -49,7 +49,6 @@ export function findBy_id(req, res) {
         if (!actor) return res.status(404).send({ message: "Actor not found" });
         res.send(actor.cleanup());
     }).catch(async err => {
-        console.log("Error: ", err)
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });
