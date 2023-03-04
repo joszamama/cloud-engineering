@@ -45,9 +45,11 @@ export function getTrip(req, res) {
 }
 
 export function addTrip(req, res) {
+    req.body.manager = res.locals.oas.security?.apikey.uid;
     Trip.create(req.body).then(async trip => {
-        res.send(await trip.cleanup());
+        res.status(201).send();
     }).catch(err => {
+        console.log(err.message)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });
@@ -78,9 +80,10 @@ export function updateTrip(req, res) {
             }
         }
         
-        Object.assign(trip, req.body);
+        Object.keys(res.locals.oas.body).forEach(key => trip[key] = res.locals.oas.body[key]);
 
         await trip.save();
+
         res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

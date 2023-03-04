@@ -28,10 +28,11 @@ export async function checkOwnership(decoded, paramName, paramValue) {
             if (decoded?.role === "Explorer") {
                 return await Application.findById(paramValue).then(application => application?.actor?._id.toString() === decoded?.uid) ?? false;
             } else if (decoded?.role === "Manager") {
-                return await Actor.findById(decoded?.uid).then(actor => actor.managedTrips.includes(paramValue)) ?? false;
+                const tripId = await Application.findById(paramValue).then(application => application?.trip?._id.toString());
+                return await Actor.findById(decoded?.uid).then(actor => actor.managedTrips?.map(mt => mt.toString()).includes(tripId)) ?? false;
             }
-        case "ticker":
-            return await Trip.findById(paramValue).then(trip => trip?.manager === decoded?.uid) ?? false;
+        case "tripId":
+            return await Trip.findById(paramValue).then(trip => trip.manager?.toString() === decoded?.uid) ?? false;
         case "finderId":
             return await Actor.findById(decoded?.uid).then(actor => actor.finders.includes(paramValue)) ?? false;
         case "sponsorshipId":

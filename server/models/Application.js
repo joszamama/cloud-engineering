@@ -10,13 +10,13 @@ const ApplicationSchema = new mongoose.Schema({
 
 ApplicationSchema.methods.cleanup = function () {
     return {
-        id: this._id,
+        id: this._id.toString(),
         status: this.status,
         rejectReason: this.rejectReason,
         comments: this.comments,
-        createdAt: this.createdAt,
-        trip: this.trip,
-        actor: this.actor
+        createdAt: this.createdAt?.toISOString(),
+        trip: this.trip?.toString(),
+        actor: this.actor?.toString(),
     };
 }
 

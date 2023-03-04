@@ -3,7 +3,7 @@ import Sponsorship from "./Sponsorship.js";
 import { Stage } from "./Stage.js";
 
 const TripSchema = new mongoose.Schema({
-    ticker: { type: String, required: [true, "can't be blank"], unique: true, match: [/^[0-9]{6}-[A-Z]{4}$/, "is invalid"] },
+    ticker: { type: String, unique: true, match: [/^[0-9]{6}-[A-Z]{4}$/, "is invalid"] },
     title: { type: String, required: [true, "can't be blank"] },
     description: { type: String, required: [true, "can't be blank"] },
     price: Number,
@@ -41,24 +41,24 @@ TripSchema.methods.cleanup = async function () {
         description: this.description,
         price: this.price,
         requirements: this.requirements,
-        startDate: this.startDate,
-        endDate: this.endDate,
-        pictures: this.pictures,
+        startDate: this.startDate?.toISOString(),
+        endDate: this.endDate?.toISOString(),
+        pictures: this.pictures?.map(b => b.toJSON()),
         cancelled: this.cancelled,
         cancelReason: this.cancelReason,
         isPublished: this.isPublished,
         stages: this.stages,
-        manager: this.manager,
-        sponsorships: this.sponsorships,
-        applications: this.applications,
+        manager: this.manager?.toString(),
+        sponsorships: this.sponsorships?.map(s => s.toString()),
+        applications: this.applications?.map(a => a.toString())
     };
 }
 
 TripSchema.pre('save', function () {
-    this.price = this.stages.reduce((acc, stage) => acc + stage.price, 0);
+    this.price = this.stages?.reduce((acc, stage) => acc + stage.price, 0);
 
     const date = new Date()
-    this.ticker = `${date.getFullYear().toString().substr(-2)}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 4).toUpperCase()}`
+    this.ticker = this.ticker ?? `${date.getFullYear().toString().substr(-2)}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 4).toUpperCase()}`
 });
 
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
