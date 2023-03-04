@@ -30,7 +30,6 @@ export function getActor(req, res) {
 
 export function addActor(req, res) {
     let role = res.locals.oas.security?.apikey?.role
-    console.log("Oas body: ", role);
 
     if (![ "Anonymous", "Administrator" ].includes(role)) return res.status(403).send({ message: "Forbidden" });
     
@@ -47,6 +46,7 @@ export function findBy_id(req, res) {
         if (!actor) return res.status(404).send({ message: "Actor not found" });
         res.send(actor.cleanup());
     }).catch(async err => {
+        console.log("Error: ", err)
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });

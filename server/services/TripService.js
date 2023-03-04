@@ -66,7 +66,7 @@ export function findById(req, res) {
 }
 
 export function updateTrip(req, res) {
-    Trip.findById(req.params._id, req.body).then(async trip => {
+    Trip.findById(req.params._id).then(async trip => {
 
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         if (trip.isPublished) {
@@ -77,6 +77,9 @@ export function updateTrip(req, res) {
                 return res.status(400).send({ message: "Trip cannot be modified after being published" });
             }
         }
+        
+        Object.assign(trip, req.body);
+
         await trip.save();
         res.status(204).send();
     }).catch(err => {

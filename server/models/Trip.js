@@ -6,7 +6,7 @@ const TripSchema = new mongoose.Schema({
     ticker: { type: String, required: [true, "can't be blank"], unique: true, match: [/^[0-9]{6}-[A-Z]{4}$/, "is invalid"] },
     title: { type: String, required: [true, "can't be blank"] },
     description: { type: String, required: [true, "can't be blank"] },
-    price: { type: Number, required: [true, "can't be blank"] },
+    price: Number,
     requirements: { type: [String], required: [true, "can't be blank"] },
     startDate: { type: Date, required: [true, "can't be blank"] },
     endDate: {
@@ -19,7 +19,7 @@ const TripSchema = new mongoose.Schema({
         },
         required: [true, "can't be blank"]
     },
-    pictures: { type: [Buffer], required: [true, "can't be blank"] },
+    pictures: [Buffer],
     cancelled: { type: Boolean, default: false },
     cancelReason: { type: String },
     isPublished: { type: Boolean, default: false },
@@ -53,6 +53,13 @@ TripSchema.methods.cleanup = async function () {
         applications: this.applications,
     };
 }
+
+TripSchema.pre('save', function () {
+    this.price = this.stages.reduce((acc, stage) => acc + stage.price, 0);
+
+    const date = new Date()
+    this.ticker = `${date.getFullYear().toString().substr(-2)}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 4).toUpperCase()}`
+});
 
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
 

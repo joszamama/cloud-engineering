@@ -67,6 +67,13 @@ Administrator:
     read:any: ["*"]
     update:any: ["*"]
     delete:any: ["*"]
+  api/v1/trips:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/trips/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
 
 
 Sponsor:

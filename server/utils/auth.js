@@ -21,6 +21,9 @@ export async function verifyIdToken(token) {
 export async function checkOwnership(decoded, paramName, paramValue) {
     switch (paramName) {
         case "actorId":
+            console.log("decoded: ", decoded)
+            console.log("paramName: ", paramName)
+            console.log("Param value: ", paramValue)
             return await Actor.findById(paramValue).then(actor => actor?.email === decoded?.email) ?? false;
         case "applicationActor":
             return await Actor.findOne({ email: decoded?.email }).then(actor => paramValue === actor?._id) ?? false;
@@ -28,7 +31,7 @@ export async function checkOwnership(decoded, paramName, paramValue) {
             if (decoded?.role === "Explorer") {
                 return await Application.findById(paramValue).then(application => application?.actor?.email === decoded?.email) ?? false;
             } else if (decoded?.role === "Manager") {
-                return await Actor.findOne({ email: decoded?.email }).then(actor => actor.trips.includes(paramValue)) ?? false;
+                return await Actor.findOne({ email: decoded?.email }).then(actor => actor.managedTrips.includes(paramValue)) ?? false;
             }
         case "ticker":
             return await Trip.findById(paramValue).then(trip => trip?.manager?.email === decoded?.email) ?? false;

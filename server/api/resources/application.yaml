@@ -158,7 +158,6 @@ schemas:
     required:
       - id
       - createdAt
-      - status
     properties:
       id:
         type: string

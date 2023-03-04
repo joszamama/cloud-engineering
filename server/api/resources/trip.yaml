@@ -133,10 +133,8 @@ schemas:
   trip:
     type: object
     required:
-      - ticker
       - title
       - description
-      - price
       - requirements
       - startDate
       - endDate
@@ -151,6 +149,7 @@ schemas:
         type: string
       price:
         type: number
+        readOnly: true
       requirements:
         type: array
         items:

@@ -272,12 +272,14 @@ schemas:
         type: string
       phone:
         type: string
+        pattern: ^(\+?\d{1,3}[\s-]?)?\(?\d{2,3}\)?[\s-]?\d{3}[\s-]?\d{2,3}[\s-]?\d{2}$
       address:
         type: string
       banned:
         type: boolean
       preferredLanguage:
         type: string
+        enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
       managedTrips:
         type: array
         items:
