@@ -68,8 +68,9 @@ export function findById(req, res) {
 }
 
 export function updateTrip(req, res) {
+    
     Trip.findById(req.params._id).then(async trip => {
-
+        
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         if (trip.isPublished) {
             const applications = await Application.find({ trip: trip._id, status: "ACCEPTED" }) ?? [];
@@ -80,6 +81,7 @@ export function updateTrip(req, res) {
             }
         }
         
+        delete res.locals.oas.body.manager;
         Object.keys(res.locals.oas.body).forEach(key => trip[key] = res.locals.oas.body[key]);
 
         await trip.save();

@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
+import Actor from "./Actor.js";
+import Trip from "./Trip.js";
 
 const ApplicationSchema = new mongoose.Schema({
     status: { type: String, enum: ["PENDING", "REJECTED", "DUE", "ACCEPTED", "CANCELLED"], default: "PENDING" },
     rejectReason: { type: String },
     comments: { type: String },
-    actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
-    trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip' },
+    actor: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor', required: [true, "can't be blank"] },
+    trip: { type: mongoose.Schema.Types.ObjectId, ref: 'Trip', required: [true, "can't be blank"] },
 }, { timestamps: true });
 
 ApplicationSchema.methods.cleanup = function () {
@@ -19,6 +21,11 @@ ApplicationSchema.methods.cleanup = function () {
         actor: this.actor?.toString(),
     };
 }
+
+ApplicationSchema.pre('save', async function () {
+    await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
+    await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+});
 
 ApplicationSchema.pre('findOneAndUpdate', async function (next) {
     const application = await this.model.findOne(this.getQuery());

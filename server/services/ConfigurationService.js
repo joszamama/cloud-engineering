@@ -16,7 +16,6 @@ export function updateConfig(_req, res) {
     Configuration.findOneAndUpdate({}, _req.body, {new: true}).then((e) => {
         res.status(204).send();
     }).catch((err) => {
-        console.log("Err: ", err)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });

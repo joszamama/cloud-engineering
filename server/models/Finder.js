@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Actor from "./Actor.js";
 
 const StageSchema = new mongoose.Schema({
     title: {type: String, required: [true, "can't be blank"]},
@@ -65,7 +66,10 @@ FinderSchema.methods.cleanup = function () {
     };
 }
 
-FinderSchema.pre('save', function (callback) {
+FinderSchema.pre('save', async function (callback) {
+
+    await Actor.findByIdAndUpdate(this.actor, { $push: { finders: this._id } }).exec();
+
     const Trip = mongoose.model("Trip");
     const Configuration = mongoose.model("Configuration");
 

@@ -12,6 +12,8 @@ export function getFinder(req, res) {
 }
 
 export function addFinder(req, res) {
+    res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
+
     Finder.create(req.body).then(finder => {
         res.send(finder.cleanup());
     }).catch(err => {
@@ -33,9 +35,15 @@ export function findFinderBy_id(req, res) {
 }
 
 export function updateFinder(req, res) {
-    Finder.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(finder => {
+    Finder.findById(req.params._id,).then(finder => {
         if (!finder) return res.status(404).send({ message: "Finder Not Found" });
-        res.send(finder.cleanup());
+
+        delete res.locals.oas.body.actor;
+        delete res.locals.oas.body.result;
+        Object.keys(res.locals.oas.body).forEach(key => finder[key] = res.locals.oas.body[key]);
+
+        finder.save();
+        res.status(204).send();
     }
     ).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

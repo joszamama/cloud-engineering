@@ -55,4 +55,14 @@ ActorSchema.pre('save', function (next) {
     next();
 });
 
+ActorSchema.pre('findOneAndUpdate', function (next) {
+    if (!this._update.password) {
+        return next();
+    }
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(this._update.password, salt);
+    this._update.password = hash;
+    next();
+});
+
 export default mongoose.model('Actor', ActorSchema)

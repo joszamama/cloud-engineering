@@ -11,6 +11,8 @@ export function getSponsorship(req, res) {
 }
 
 export function addSponsorship(req, res) {
+    res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
+
     Sponsorship.create(req.body).then(sponsorship => {
         res.send(sponsorship.cleanup());
     }).catch(err => {
@@ -32,9 +34,15 @@ export function findSponsorshipBy_id(req, res) {
 }
 
 export function updateSponsorship(req, res) {
-    Sponsorship.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(sponsorship => {
+    Sponsorship.findById(req.params._id).then(sponsorship => {
         if (!sponsorship) return res.status(404).send({ message: "Sponsorship Not Found" });
-        res.send(sponsorship.cleanup());
+
+        delete res.locals.oas.body.actor;
+        delete res.locals.oas.body.trip;
+        Object.keys(res.locals.oas.body).forEach(key => sponsorship[key] = res.locals.oas.body[key]);
+
+        sponsorship.save();
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
