@@ -180,6 +180,7 @@ schemas:
   application:
     type: object
     required:
+      - actor
       - createdAt
       - id
       - status
@@ -202,5 +203,6 @@ schemas:
         type: string
       actor:
         type: string
+        readOnly: true
       trip:
         type: string

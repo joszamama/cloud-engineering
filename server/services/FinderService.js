@@ -2,12 +2,8 @@ import Finder from '../models/Finder.js';
 import Configuration from '../models/Configuration.js';
 
 export async function getFinder(req, res) {
-
-    Finder.find(res.locals.oas.params.actor ? {actor: res.locals.oas.params?.actor} : {}).then(finders => {
-        let findersPromises = finders.map(async finder => await finder.cleanup());
-        Promise.all(findersPromises).then(findersRes => {
-            res.send(findersRes);
-        });
+    Finder.find(res.locals.oas.params.actor ? {actor: res.locals.oas.params?.actor} : {}).then(async finders => {
+        res.send(await Promise.all(finders.map(finder => finder.cleanup())));
     }).catch(err => {
         console.log(err)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

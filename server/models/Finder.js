@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Actor from "./Actor.js";
 import Sponsorship from "./Sponsorship.js";
 
+/* Trip Schema */
 const StageSchema = new mongoose.Schema({
     title: { type: String, required: [true, "can't be blank"] },
     description: { type: String, required: [true, "can't be blank"] },
@@ -60,6 +61,7 @@ TripSchema.methods.cleanup = async function () {
     };
 }
 
+/* Finder Schema */
 const FinderSchema = new mongoose.Schema({
     keyword: { type: String },
     priceFrom: { type: Number },
@@ -80,20 +82,16 @@ const FinderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 FinderSchema.methods.cleanup = async function () {
-    let tripsPromises = this.result.map(async trip => await trip.cleanup());
-    Promise.all(tripsPromises).then(trips => {
-        return {
-            actor: this.actor.toString(),
-            id: this._id.toString(),
-            keyword: this.keyword,
-            priceFrom: this.priceFrom,
-            priceTo: this.priceTo,
-            dateFrom: this.dateFrom,
-            dateTo: this.dateTo,
-            result: trips
-        };
-    });
-
+    return {
+        actor: this.actor.toString(),
+        id: this._id.toString(),
+        keyword: this.keyword,
+        priceFrom: this.priceFrom,
+        priceTo: this.priceTo,
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo,
+        result: await Promise.all(this.result.map(t => t.cleanup()))
+    };
 }
 
 FinderSchema.pre('save', async function (callback) {

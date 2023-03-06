@@ -284,24 +284,28 @@ schemas:
         enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
       managedTrips:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './trip.yaml#/schemas/trip'
             - type: string
       applications:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './application.yaml#/schemas/application'
             - type: string
       sponsorships:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './sponsorship.yaml#/schemas/sponsorship'
             - type: string
       finder:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './finder.yaml#/schemas/finder'
