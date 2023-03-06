@@ -21,8 +21,10 @@ SponsorshipSchema.methods.cleanup = function() {
 }
 
 SponsorshipSchema.pre('save', async function () {
-    await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
-    await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+    if (Object.keys(this.getChanges()?.["$set"] ?? {}).includes("createdAt")) {
+        await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
+        await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+    }
 });
 
 export default mongoose.model('Sponsorship', SponsorshipSchema)

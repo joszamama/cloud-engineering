@@ -6,6 +6,14 @@ paths:
       tags: [ Finders ]
       description: Returns all finders
       operationId: getFinder
+      parameters:
+        - name: actor
+          x-acl-binding: finderActor
+          in: query
+          description: Actor id
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: Finder list
@@ -126,6 +134,7 @@ schemas:
   finder:
     type: object
     required:
+      - actor
       - id
     properties:
       id:
@@ -133,26 +142,31 @@ schemas:
         readOnly: true
       keyword:
         type: string
+        nullable: true
         default: null
       priceFrom:
         type: number
+        nullable: true
         default: null
       priceTo:
         type: number
+        nullable: true
         default: null
       dateFrom:
         type: string
         format: date
+        nullable: true
         default: null
       dateTo:
         type: string
         format: date
+        nullable: true
         default: null
       actor:
         type: string
+        readOnly: true
       result:
         type: array
+        readOnly: true
         items:
-          oneOf:
-            - $ref: './trip.yaml#/schemas/trip'
-            - type: string
+          type: object

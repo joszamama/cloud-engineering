@@ -35,6 +35,8 @@ export async function checkOwnership(decoded, paramName, paramValue) {
             return await Trip.findById(paramValue).then(trip => trip.manager?.toString() === decoded?.uid) ?? false;
         case "finderId":
             return await Actor.findById(decoded?.uid).then(actor => actor.finders.includes(paramValue)) ?? false;
+        case "finderActor":
+            return await Actor.findById(decoded?.uid).then(actor => paramValue === actor?._id.toString()) ?? false;
         case "sponsorshipId":
             return await Actor.findById(decoded?.uid).then(actor => actor.sponsorships.includes(paramValue)) ?? false;
         default:

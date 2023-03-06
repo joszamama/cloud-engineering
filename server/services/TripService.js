@@ -81,6 +81,7 @@ export function updateTrip(req, res) {
             }
         }
         
+        delete res.locals.oas.body.ticker;
         delete res.locals.oas.body.manager;
         Object.keys(res.locals.oas.body).forEach(key => trip[key] = res.locals.oas.body[key]);
 
@@ -88,6 +89,7 @@ export function updateTrip(req, res) {
 
         res.status(204).send();
     }).catch(err => {
+        console.log(err)
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });

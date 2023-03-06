@@ -1,10 +1,15 @@
 import Finder from '../models/Finder.js';
 import Configuration from '../models/Configuration.js';
 
-export function getFinder(req, res) {
-    Finder.find().then(finders => {
-        res.send(finders.map(finder => finder.cleanup()));
+export async function getFinder(req, res) {
+
+    Finder.find(res.locals.oas.params.actor ? {actor: res.locals.oas.params?.actor} : {}).then(finders => {
+        let findersPromises = finders.map(async finder => await finder.cleanup());
+        Promise.all(findersPromises).then(findersRes => {
+            res.send(findersRes);
+        });
     }).catch(err => {
+        console.log(err)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });
@@ -14,9 +19,10 @@ export function getFinder(req, res) {
 export function addFinder(req, res) {
     res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
 
-    Finder.create(req.body).then(finder => {
-        res.send(finder.cleanup());
+    Finder.create(res.locals.oas.body).then(finder => {
+        res.status(201).send();
     }).catch(err => {
+        console.log(err)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });
@@ -24,9 +30,9 @@ export function addFinder(req, res) {
 }
 
 export function findFinderBy_id(req, res) {
-    Finder.findOne({ _id: req.params._id }).then(finder => {
+    Finder.findOne({ _id: req.params._id }).then(async finder => {
         if (!finder) return res.status(404).send({ message: "Finder not found" });
-        res.send(finder.cleanup());
+        res.send(await finder.cleanup());
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

@@ -23,7 +23,11 @@ ApplicationSchema.methods.cleanup = function () {
 }
 
 ApplicationSchema.pre('save', async function () {
-    if (Object.keys(this.getChanges()).includes("createdAt")) { // New application
+
+    if (!this.rejectReason && this.status === "REJECTED") throw new Error("Reject reason is required when status is REJECTED");
+    if (this.rejectReason && this.status !== "REJECTED") this.rejectReason = undefined;
+
+    if (Object.keys(this.getChanges()?.["$set"] ?? {}).includes("createdAt")) { // New application
         await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
         await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
     }
@@ -32,6 +36,9 @@ ApplicationSchema.pre('save', async function () {
 ApplicationSchema.pre('findOneAndUpdate', async function (next) {
     const application = await this.model.findOne(this.getQuery());
     const newApplication = this.getUpdate();
+
+    if (!this.rejectReason && this.status === "REJECTED") throw new Error("Reject reason is required when status is REJECTED");
+    if (this.rejectReason && this.status !== "REJECTED") this.rejectReason = undefined;
 
     if (["DUE", "REJECTED"].includes(newApplication.status) && application.status === "PENDING") {
         if (newApplication.status === "REJECTED" && newApplication.rejectReason === undefined) throw new Error("Invalid application update");

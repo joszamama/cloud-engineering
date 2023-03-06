@@ -17,6 +17,7 @@ paths:
   /api/v1/applications: {$ref: resources/application.yaml#/paths/api-v1-applications}
   /api/v1/applications/{_id}: {$ref: resources/application.yaml#/paths/api-v1-applications-id}
   /api/v1/applications/{_id}/pay: {$ref: resources/application.yaml#/paths/api-v1-applications-id-pay}
+  /api/v1/applications/{_id}/cancel: {$ref: resources/application.yaml#/paths/api-v1-applications-id-cancel}
   /api/v1/finders: {$ref: resources/finder.yaml#/paths/api-v1-finders}
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
   /api/v1/config: {$ref: resources/configuration.yaml#/paths/api-v1-config}

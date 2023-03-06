@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Actor from "./Actor.js";
+import Application from "./Application.js";
 import Sponsorship from "./Sponsorship.js";
 import { Stage } from "./Stage.js";
 
@@ -56,12 +57,20 @@ TripSchema.methods.cleanup = async function () {
 }
 
 TripSchema.pre('save', async function () {
+
+    if (this.cancelled && !this.cancelReason) throw new Error("Cancel reason is required when cancelling a trip")
+    if (!this.cancelled && this.cancelReason) this.cancelReason = undefined
+
+    if (this.cancelled) await Application.updateMany({ trip: this._id }, { status: "CANCELLED" }).exec();
+
     this.price = this.stages?.reduce((acc, stage) => acc + stage.price, 0);
 
     const date = new Date()
     this.ticker = this.ticker ?? `${date.getFullYear().toString().substr(-2)}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 4).toUpperCase()}`
 
-    await Actor.findByIdAndUpdate(this.manager, { $push: { managedTrips: this._id } }).exec();
+    if (Object.keys(this.getChanges()?.["$set"] ?? {}).includes("createdAt")) {
+        await Actor.findByIdAndUpdate(this.manager, { $push: { managedTrips: this._id } }).exec();
+    }
 });
 
 TripSchema.index({ ticker: "text", title: "text", description: "text" }, { name: "trip_text_search_index", weights: { ticker: 10, title: 5, description: 1 } })
