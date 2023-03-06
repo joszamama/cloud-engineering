@@ -19,4 +19,3 @@ export function updateFinder(req, res) {
 export function deleteFinder(req, res) {
     service.deleteFinder(req, res);
 }
-

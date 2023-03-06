@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { updateConfig } from "../services/FinderService.js";
 
 const ConfigurationSchema = new mongoose.Schema({
     flat_rate: {type: Number, min: 0, max: 100},
@@ -14,10 +13,5 @@ ConfigurationSchema.methods.cleanup = function() {
         max_finder_result: this.max_finder_result
     };
 }
-
-ConfigurationSchema.post('save', async function() {
-    await updateConfig();
-    console.log("Configuration updated. Updating Finders flush config...")
-});
 
 export default mongoose.model('Configuration', ConfigurationSchema)

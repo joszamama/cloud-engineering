@@ -63,25 +63,3 @@ export function deleteFinder(req, res) {
         });
     });
 }
-
-var config;
-var flushPeriod;
-
-export async function updateConfig() {
-    console.log('Updating config...');
-    config = await Configuration.find({})[0]
-    flushPeriod = config?.flush_period * 3600 * 1000 || 3600 * 1000;
-}
-
-async () => {
-    await updateConfig();
-    setInterval(async () => {
-        try {
-            let finders = await Finder.find({ createdAt: { $lt: new Date(new Date() - flushPeriod) } })
-            Finder.updateMany({ _id: { $in: finders } }, { $set: { trips: [] } });
-            res.status(201).send('Finders flushed!')
-        } catch (error) {
-            res.status(404).send(error)
-        }
-    }, flushPeriod);
-}
