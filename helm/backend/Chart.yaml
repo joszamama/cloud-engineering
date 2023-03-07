@@ -1,0 +1,6 @@
+apiVersion: v2
+name: backend
+description: Helm Chart for DO2223 Backend Service
+type: application
+version: 0.1.0
+appVersion: "DO2223-C10"

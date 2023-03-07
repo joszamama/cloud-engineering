@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}{{ .Values.global.infrastructure }}{{ end }}
+spec:
+  {{- if eq .Values.global.node_env "development" }}
+  type: NodePort
+  {{- end }}
+  ports:
+    - name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+      port: {{ if .Values.port}}{{ .Values.port}}{{ else }}"8080"{{ end }}
+      protocol: TCP
+      targetPort: 8080
+      {{- if eq .Values.global.node_env "development" }}
+      nodePort: 31600
+      {{- end }}
+  selector:
+    app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}

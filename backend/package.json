@@ -1,0 +1,27 @@
+{
+    "name": "acme-explorer",
+    "version": "1.0.0",
+    "description": "Projecto para la asignatura de Cloud Engineering",
+    "license": "UNLICENSED",
+    "type": "module",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon -r dotenv/config index.js",
+        "populate": "node --no-warnings -r dotenv/config populateDB.js",
+        "build": "docker build . -t acme-explorer:1.0.0 -t acme-explorer:latest"
+    },
+    "dependencies": {
+        "@oas-tools/auth": "^1.0.1",
+        "@oas-tools/core": "^3.0.0",
+        "bcrypt": "^5.1.0",
+        "express": "^4.18.2",
+        "firebase-admin": "^11.5.0",
+        "mongoose": "^6.9.0",
+        "mongoose-unique-validator": "^3.1.0",
+        "nodemon": "^2.0.20"
+    },
+    "devDependencies": {
+        "dotenv": "^16.0.3"
+    }
+}

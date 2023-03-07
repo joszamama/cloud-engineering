@@ -1,0 +1,4 @@
+global:
+  infrastructure: "do2223-c10"
+  node_env: "development"
+port: "8080"

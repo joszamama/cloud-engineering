@@ -1,0 +1,80 @@
+paths:
+  api-v1-dashboard:
+    x-router-controller: DashboardController
+    get:
+      security: [apikey: []]
+      tags: [ Dashboard ]
+      description: Returns the dashboard
+      operationId: getDashboard
+      responses:
+        200:
+          description: Dashboard calculations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/dashboard'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  dashboard:
+    type: object
+    required:
+      - trip_average
+      - trip_minium
+      - trip_maximum
+      - trip_deviation
+      - application_average
+      - application_minium
+      - application_maximum
+      - application_deviation
+      - trip_price_average
+      - trip_price_minium
+      - trip_price_maximum
+      - trip_price_deviation
+      - ratio_by_status
+    properties:
+      trip_average:
+        type: number
+      trip_minium:
+        type: number
+      trip_maximum: 
+        type: number
+      trip_deviation: 
+        type: number
+      application_average:
+        type: number
+      application_minium:
+        type: number
+      application_maximum:
+        type: number
+      application_deviation:
+        type: number 
+      trip_price_average:
+        type: number
+      trip_price_minium:
+        type: number 
+      trip_price_maximum:
+        type: number
+      trip_price_deviation:
+        type: number
+      ratio_by_status:
+        type: object
+      price_range_average:
+        type: object
+      top10_finder_keywords:
+        type: array
+        items:
+          type: object
+          properties:
+            keyword:
+              type: string
+              nullable: true
+            count:
+              type: integer

@@ -1,0 +1,312 @@
+paths:
+  api-v1-login:
+    x-router-controller: ActorController
+    post:
+      tags: [ Actors ]
+      security: [apikey: []]
+      description: Returns a JWT token for the actor
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+        description: Actor to be logged in
+        required: true
+      responses:
+        201:
+          description: Actor logged in
+          content:
+            application/json:
+              schema:
+                type: string
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-actors:
+    x-router-controller: ActorController
+    get:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Returns all actors
+      operationId: getActor
+      responses:
+        200:
+          description: Actor list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      tags: [ Actors ]
+      security: [apikey: []]
+      description: Creates a new actor
+      operationId: addActor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/actor'
+        description: Actor to be created
+        required: true
+      responses:
+        201:
+          description: Actor
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v2-actors-explorersInPeriod:
+    x-router-controller: ActorController
+    get:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Returns the number of explorers in a period that match the comparison criteria with the arbitrary money value
+      operationId: explorersInPeriod
+      parameters:
+        - required: true
+          name: startDate
+          description: Start date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: endDate
+          description: End date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: comparison
+          description: Comparison criteria
+          in: query
+          schema:
+            type: string
+            enum: [">", ">=", "<", "<=", "=", "!="]
+        - required: true
+          name: money
+          description: Arbitrary money value
+          in: query
+          schema:
+            type: number
+      responses:
+        200:
+          description: Actor found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-actors-id:
+    x-router-controller: ActorController
+    get:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Returns a single actor by its _id
+      operationId: findBy_id
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: actorId
+          description: _id of the actor to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Actor found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/actor'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Update a actor based on its _id
+      operationId: updateActor
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: actorId
+          description: _id of the actor to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/actor'
+        description: Actor to be updated
+        required: true
+      responses:
+        '204':
+          description: Actor updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Deletes a single actor based on its _id
+      operationId: deleteActor
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: actorId
+          description: _id of the actor to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Actor deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v2-actors-id-moneyInPeriod:
+    x-router-controller: ActorController
+    get:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Returns the money earned by an actor in a period
+      operationId: moneyInPeriod
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: actorId
+          description: _id of the actor to fetch
+          in: path
+          schema:
+            type: string
+        - required: true
+          name: startDate
+          description: Start date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+        - required: true
+          name: endDate
+          description: End date of the period
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Money earned by the actor in the period
+          content:
+            application/json:
+              schema:
+                type: number
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+schemas:
+  actor:
+    type: object
+    required:
+      - id
+      - name
+      - surname
+      - password
+      - email
+      - role
+      - preferredLanguage
+    properties:
+      id:
+        type: string
+        readOnly: true
+      name:
+        type: string
+      surname:
+        type: string
+      password:
+        type: string
+        writeOnly: true
+      email:
+        type: string
+        format: email
+      role:
+        type: string
+        enum: [Administrator, Explorer, Manager, Sponsor]
+      phone:
+        type: string
+        pattern: ^(\+?\d{1,3}[\s-]?)?\(?\d{2,3}\)?[\s-]?\d{3}[\s-]?\d{2,3}[\s-]?\d{2}$
+      address:
+        type: string
+      banned:
+        type: boolean
+      preferredLanguage:
+        type: string
+        enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
+      managedTrips:
+        type: array
+        readOnly: true
+        items:
+          oneOf:
+            - $ref: './trip.yaml#/schemas/trip'
+            - type: string
+      applications:
+        type: array
+        readOnly: true
+        items:
+          oneOf:
+            - $ref: './application.yaml#/schemas/application'
+            - type: string
+      sponsorships:
+        type: array
+        readOnly: true
+        items:
+          oneOf:
+            - $ref: './sponsorship.yaml#/schemas/sponsorship'
+            - type: string
+      finder:
+        type: array
+        readOnly: true
+        items:
+          oneOf:
+            - $ref: './finder.yaml#/schemas/finder'
+            - type: string

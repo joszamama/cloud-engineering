@@ -1,0 +1,15 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}{{ .Values.global.infrastructure }}{{ end }}
+  labels:
+    app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.volume_storage }}
+---

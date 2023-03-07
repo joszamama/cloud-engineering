@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}{{ .Values.global.infrastructure }}{{ end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+    spec:
+      containers:
+        - image: mongo:{{ .Chart.AppVersion }}
+          imagePullPolicy: Always
+          name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+          ports:
+            - containerPort: 27017
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data/db
+              name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}-db-volume
+      volumes:
+        - name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}-db-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}

@@ -1,0 +1,141 @@
+paths:
+  api-v1-sponsorships:
+    x-router-controller: SponsorshipController
+    get:
+      security: [apikey: []]
+      tags: [ Sponsorship ]
+      description: Returns all sponsorships
+      operationId: getSponsorship
+      responses:
+        200:
+          description: Sponsorship list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/schemas/sponsorship'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    post:
+      security: [apikey: []]
+      tags: [ Sponsorship ]
+      description: Creates a new sponsorship
+      operationId: addSponsorship
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/sponsorship'
+        description: Sponsorship to be created
+        required: true
+      responses:
+        201:
+          description: Sponsorship
+        default:
+            description: Unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-sponsorships-id:
+    x-router-controller: SponsorshipController
+    get:
+      security: [apikey: []]
+      tags: [ Sponsorship ]
+      description: Returns a single sponsorship by its _id
+      operationId: findSponsorshipBy_id
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: sponsorshipId
+          description: _id of the sponsorship to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Sponsorship found by _id
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/sponsorship'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      security: [apikey: []]
+      tags: [ Sponsorship ]
+      description: Update a sponsorship based on its _id
+      operationId: updateSponsorship
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: sponsorshipId
+          description: _id of the sponsorship to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/sponsorship'
+        description: Sponsorship to be updated
+        required: true
+      responses:
+        '204':
+          description: Sponsorship updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    delete:
+      security: [apikey: []]
+      tags: [ Sponsorship ]
+      description: Deletes a single sponsorship based on its _id
+      operationId: deleteSponsorship
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: sponsorshipId
+          description: _id of the sponsorship to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Sponsorship deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  sponsorship:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        readOnly: true
+      banner:
+        type: string
+      link:
+        type: string
+      actor:
+        type: string
+      trip:
+        type: string

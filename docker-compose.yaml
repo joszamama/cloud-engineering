@@ -1,0 +1,44 @@
+version: '2.2'
+services:
+  do-frontend:
+    container_name: do-${NODE_ENV:-production}-frontend
+    image: 'alesancor1/acme-explorer-client:DO2223'
+    build: ./frontend
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - BACKEND_URL=${BACKEND_URL:-http://localhost:8080}
+    ports:
+      - ${FRONTEND_PORT:-3000}:8081
+    restart: 'unless-stopped'
+  # ==================================
+  do-backend:
+    container_name: do-${NODE_ENV:-production}-backend
+    image: 'alesancor1/acme-explorer-backend:DO2223'
+    build: ./backend
+    environment:
+      - PORT=${PORT:-8080}
+      - NODE_ENV=${NODE_ENV:-production}
+      - DATABASE_URL=mongodb://do-database:27017/acme-explorer
+      - FIREBASE_CREDENTIALS=${FIREBASE_CREDENTIALS}
+    ports:
+      - ${PORT-8080}:${PORT:-8080}
+    volumes:
+      - 'do-backend-${NODE_ENV:-production}-logs:/opt/app/logs'
+    restart: 'unless-stopped'
+  # ==================================
+  do-database:
+    container_name: do-${NODE_ENV:-production}-database
+    image: mongo
+    volumes:
+      - 'do-mongo-${NODE_ENV:-production}-data:/data/db'
+      - 'do-mongo-${NODE_ENV:-production}-logs:/var/log/mongodb'
+    mem_limit: 2000m
+    restart: 'unless-stopped'
+volumes:
+  do-mongo-production-data: null
+  do-mongo-production-logs: null
+  do-backend-production-logs: null
+
+  do-mongo-development-data: null
+  do-mongo-development-logs: null
+  do-backend-development-logs: null

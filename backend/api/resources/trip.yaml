@@ -1,0 +1,192 @@
+paths:
+  api-v1-trips:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns all trips
+      operationId: getTrip
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: The key word to be searched in the ticker, title or description of the trips.
+        - in: query
+          name: exactMatch
+          schema:
+            type: boolean
+            default: false
+          description: Flag that indicates whether the search is full-text or partial-text.
+      responses:
+        200:
+          description: Trip list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/schemas/trip"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+    post:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Creates a new trip
+      operationId: addTrip
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/trip"
+        description: Trip to be created
+        required: true
+      responses:
+        201:
+          description: Trip
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-trips-id:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns a single trip by its _id
+      operationId: findBy_id
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: tripId
+          description: _id of the trip to fetch
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Trip found by _id
+          content:
+            application/json:
+              schema:
+                $ref: "#/schemas/trip"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+    put:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Update a trip based on its _id
+      operationId: updateTrip
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: tripId
+          description: _id of the trip to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/trip"
+        description: Trip to be updated
+        required: true
+      responses:
+        "204":
+          description: Trip updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+    delete:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Deletes a single trip based on its _id
+      operationId: deleteTrip
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: tripId
+          description: _id of the trip to delete
+          in: path
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Trip deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+
+schemas:
+  trip:
+    type: object
+    required:
+      - title
+      - description
+      - requirements
+      - startDate
+      - endDate
+      - cancelled
+    properties:
+      ticker:
+        type: string
+        readOnly: true
+      title:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+        readOnly: true
+      requirements:
+        type: array
+        items:
+          type: string
+      startDate:
+        type: string
+        format: date-time
+      endDate:
+        type: string
+        format: date-time
+      pictures:
+        type: array
+        items:
+          type: object
+      cancelled:
+        type: boolean
+        default: false
+      cancelReason:
+        type: string
+      stages:
+        type: array
+        items:
+          $ref: "./stage.yaml#/schemas/stage"
+      manager:
+        type: string
+      sponsorships:
+        type: array
+        items:
+          oneOf:
+            - $ref: "./sponsorship.yaml#/schemas/sponsorship"
+            - type: string
+      applications:
+        type: array
+        items:
+          oneOf:
+            - $ref: "./application.yaml#/schemas/application"
+            - type: string

@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  namespace: {{ if .Values.global.namespaceOverride }}{{.Values.global.namespaceOverride}}{{ else }}{{ .Values.global.infrastructure }}{{ end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+    spec:
+      containers:
+        - env:
+            - name: NODE_ENV
+              value: {{ .Values.global.node_env }}
+            - name: PORT
+              value: "8080"
+            - name: DATABASE_URL
+              value: mongodb://{{ .Values.global.infrastructure }}-mongo-db:27017/acme-explorer
+            - name: FIREBASE_CREDENTIALS
+              value: {{ .Values.firebase_credentials }}
+                  
+          image: alesancor1/acme-explorer-backend:DO2223
+          imagePullPolicy: Always
+          name: {{ .Values.global.infrastructure }}-{{ .Chart.Name }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              memory: 300Mi
+            limits:
+              memory: 400Mi
+      securityContext: {}
+      restartPolicy: Always

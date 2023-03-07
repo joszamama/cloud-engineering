@@ -1,0 +1,59 @@
+paths:
+  api-v1-config:
+    x-router-controller: ConfigurationController
+    get:
+      security: [apikey: []]
+      tags: [ Configuration ]
+      description: Return configuration
+      operationId: getConfig
+      responses:
+        200:
+          description: Configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/schemas/configuration'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+    put:
+      security: [apikey: []]
+      tags: [ Configuration ]
+      description: Updates configuration
+      operationId: updateConfig
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/schemas/configuration'
+        description: Configuration attributes to update
+        required: true
+      responses:
+        204:
+          description: Updated successfully
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
+
+schemas:
+  configuration:
+    type: object
+    properties:
+      flat_rate:
+        type: number
+        minimum: 0
+        maximum: 100
+      flush_period:
+        type: number
+        minimum: 0
+        maximum: 24
+      max_finder_result:
+        type: number
+        minimum: 0
+        maximum: 100

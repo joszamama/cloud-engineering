@@ -1,0 +1,98 @@
+Anonymous:
+  api/v1/login:
+    create:any: ["*"]
+  api/v1/actors:
+    create:any: ["*"]
+
+Explorer:
+  api/v1/actors/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+  api/v1/applications:
+    read:own: ["*"]
+    create:any: ["*"]
+  api/v1/applications/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+  api/v1/applications/{_id}/pay:
+    update:own: ["*"]
+  api/v1/applications/{_id}/cancel:
+    update:own: ["*"]
+  api/v1/finders:
+    read:own: ["*"]
+    create:any: ["*"]
+  api/v1/finders/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
+
+Manager:
+  api/v1/actors/{_id}:
+    read:own: ["*"]
+  api/v1/applications:
+    read:any: ["*"] # Can view any application of his own trips
+  api/v1/applications/{_id}:
+    read:own: ["*"]
+    update:own: ["*"] # Can manage applications of his own trips
+  api/v1/trips:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/trips/{_id}:
+    read:any: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
+  
+
+Administrator:
+  api/v1/actors:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/actors/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/applications:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/applications/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/applications/{_id}/pay:
+    update:any: ["*"]
+  api/v1/applications/{_id}/cancel:
+    update:any: ["*"]
+  api/v1/dashboard:
+    read:any: ["*"]
+  api/v1/config:
+    read:any: ["*"]
+    update:any: ["*"]
+  api/v2/actors/explorersInPeriod:
+    read:any: ["*"]
+  api/v2/actors/{_id}/moneyInPeriod:
+    read:any: ["*"]
+  api/v1/finders:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/finders/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/trips:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/trips/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+
+
+Sponsor:
+  api/v1/actors/{_id}:
+    read:own: ["*"]
+  api/v1/sponsorships:
+    create:any: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
