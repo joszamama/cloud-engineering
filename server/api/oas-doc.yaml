@@ -12,6 +12,7 @@ paths:
   /api/v2/actors/{_id}/moneyInPeriod: {$ref: resources/actor.yaml#/paths/api-v2-actors-id-moneyInPeriod}
   /api/v1/sponsorships: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships}
   /api/v1/sponsorships/{_id}: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships-id}
+  /api/v1/sponsorships/{_id}/pay: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships-id-pay}
   /api/v1/trips: {$ref: resources/trip.yaml#/paths/api-v1-trips}
   /api/v1/trips/{_id}: {$ref: resources/trip.yaml#/paths/api-v1-trips-id}
   /api/v1/applications: {$ref: resources/application.yaml#/paths/api-v1-applications}

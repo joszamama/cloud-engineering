@@ -12,8 +12,7 @@ export async function getConfig(_req, res) {
 }
 
 export async function updateConfig(_req, res) {
-    const config = res.locals.oas.body;
-    return Configuration.findOneAndUpdate({}, _req.body, {new: true}).then((cfg) => {
+    return Configuration.findOneAndUpdate({}, res.locals.oas.body, {new: true}).then((cfg) => {
         res.status(204).send();
         return cfg;
     }).catch((err) => {

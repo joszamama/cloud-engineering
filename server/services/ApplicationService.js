@@ -52,7 +52,7 @@ export async function addApplication(req, res) {
 }
 
 export function findApplicationBy_id(req, res) {
-    Application.findOne({ _id: req.params._id }).then(application => {
+    Application.findOne({ _id: res.locals.oas.params._id }).then(application => {
         if (!application) return res.status(404).send({ message: "Application not found" });
         res.send(application.cleanup());
     }).catch(err => {
@@ -63,7 +63,7 @@ export function findApplicationBy_id(req, res) {
 }
 
 export function updateApplication(req, res) {
-    Application.findById(req.params._id).then(application => {
+    Application.findById(res.locals.oas.params._id).then(application => {
         if (!application) return res.status(404).send({ message: "Application Not Found" });
 
         delete res.locals.oas.body.actor;
@@ -79,7 +79,7 @@ export function updateApplication(req, res) {
 }
 
 export function payApplication(req, res) {
-    Application.findByIdAndUpdate(req.params._id, { status: "ACCEPTED" }).then(application => {
+    Application.findByIdAndUpdate(res.locals.oas.params._id, { status: "ACCEPTED" }).then(application => {
         if (!application) return res.status(404).send({ message: "Application Not Found" });
         res.status(204).send();
     }).catch(err => {
@@ -89,7 +89,7 @@ export function payApplication(req, res) {
 }
 
 export function cancelApplication(req, res) {
-    Application.findByIdAndUpdate(req.params._id, { status: "CANCELLED" }).then(application => {
+    Application.findByIdAndUpdate(res.locals.oas.params._id, { status: "CANCELLED" }).then(application => {
         if (!application) return res.status(404).send({ message: "Application Not Found" });
         res.status(204).send();
     }).catch(err => {
@@ -99,7 +99,7 @@ export function cancelApplication(req, res) {
 }
 
 export function deleteApplication(req, res) {
-    Application.findByIdAndRemove(req.params._id).then(application => {
+    Application.findByIdAndRemove(res.locals.oas.params._id).then(application => {
         if (!application) return res.status(404).send({ message: "Application Not Found" });
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

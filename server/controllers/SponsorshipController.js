@@ -16,6 +16,10 @@ export function updateSponsorship(req, res) {
     service.updateSponsorship(req, res);
 }
 
+export function paySponsorship(req, res) {
+    service.paySponsorship(req, res);
+}
+
 export function deleteSponsorship(req, res) {
     service.deleteSponsorship(req, res);
 }

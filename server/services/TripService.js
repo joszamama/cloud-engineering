@@ -45,8 +45,8 @@ export function getTrip(req, res) {
 }
 
 export function addTrip(req, res) {
-    req.body.manager = res.locals.oas.security?.apikey.uid;
-    Trip.create(req.body).then(async trip => {
+    res.locals.oas.body.manager = res.locals.oas.security?.apikey.uid;
+    Trip.create(res.locals.oas.body).then(async () => {
         res.status(201).send();
     }).catch(err => {
         console.log(err.message)
@@ -57,7 +57,7 @@ export function addTrip(req, res) {
 }
 
 export function findById(req, res) {
-    Trip.findOne({ _id: req.params._id }).then(async trip => {
+    Trip.findOne({ _id: res.locals.oas.params._id }).then(async trip => {
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         res.send(await trip.cleanup());
     }).catch(err => {
@@ -69,7 +69,7 @@ export function findById(req, res) {
 
 export function updateTrip(req, res) {
     
-    Trip.findById(req.params._id).then(async trip => {
+    Trip.findById(res.locals.oas.params._id).then(async trip => {
         
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         if (trip.isPublished) {
@@ -97,7 +97,7 @@ export function updateTrip(req, res) {
 }
 
 export function deleteTrip(req, res) {
-    Trip.findById(req.params._id).then(async trip => {
+    Trip.findById(res.locals.oas.params._id).then(async trip => {
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         if (trip.isPublished) return res.status(400).send({ message: "Trip cannot be modified after being published" });
         await trip.delete();

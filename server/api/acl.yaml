@@ -85,14 +85,26 @@ Administrator:
     read:any: ["*"]
     update:any: ["*"]
     delete:any: ["*"]
+  api/v1/sponsorships:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/sponsorships/{_id}/pay:
+    update:any: ["*"]
 
 
 Sponsor:
   api/v1/actors/{_id}:
     read:own: ["*"]
   api/v1/sponsorships:
+    read:own: ["*"]
     create:any: ["*"]
   api/v1/sponsorships/{_id}:
     read:own: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
+  api/v1/sponsorships/{_id}/pay:
+    update:own: ["*"]
