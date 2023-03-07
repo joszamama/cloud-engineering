@@ -26,7 +26,7 @@ export function addFinder(req, res) {
 }
 
 export function findFinderBy_id(req, res) {
-    Finder.findOne({ _id: req.params._id }).then(async finder => {
+    Finder.findOne({ _id: res.locals.oas.params._id }).then(async finder => {
         if (!finder) return res.status(404).send({ message: "Finder not found" });
         res.send(await finder.cleanup());
     }).catch(err => {
@@ -37,7 +37,7 @@ export function findFinderBy_id(req, res) {
 }
 
 export function updateFinder(req, res) {
-    Finder.findById(req.params._id,).then(finder => {
+    Finder.findById(res.locals.oas.params._id,).then(finder => {
         if (!finder) return res.status(404).send({ message: "Finder Not Found" });
 
         delete res.locals.oas.body.actor;
@@ -55,8 +55,9 @@ export function updateFinder(req, res) {
 }
 
 export function deleteFinder(req, res) {
-    Finder.findByIdAndRemove(req.params._id).then(finder => {
+    Finder.findByIdAndRemove(res.locals.oas.params._id).then(finder => {
         if (!finder) return res.status(404).send({ message: "Finder Not Found" });
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

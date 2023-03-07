@@ -80,7 +80,7 @@ paths:
     get:
       security: [apikey: []]
       tags: [ Actors ]
-      description: Returns the number of explorers in a period that match the comparison criteria with the arbitrary money value
+      description: Returns the explorers that match the comparison criteria with the arbitrary money value in a specific period
       operationId: explorersInPeriod
       parameters:
         - required: true
@@ -103,7 +103,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [">", ">=", "<", "<=", "=", "!="]
+            enum: [">", ">=", "<", "<=", "==", "!="]
         - required: true
           name: money
           description: Arbitrary money value
@@ -112,11 +112,13 @@ paths:
             type: number
       responses:
         200:
-          description: Actor found by _id
+          description: Actor list
           content:
             application/json:
               schema:
-                $ref: '#/schemas/actor'
+                type: array
+                items:
+                  type: object
         default:
           description: Unexpected error
           content:

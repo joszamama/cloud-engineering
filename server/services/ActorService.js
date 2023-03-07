@@ -45,7 +45,7 @@ export function addActor(req, res) {
 }
 
 export function findBy_id(req, res) {
-    Actor.findOne({ _id: req.params._id }).then(async actor => {
+    Actor.findOne({ _id: res.locals.oas.params._id }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor not found" });
         res.send(actor.cleanup());
     }).catch(async err => {
@@ -56,8 +56,8 @@ export function findBy_id(req, res) {
 }
 
 export function updateActor(req, res) {
-    if (res.locals.oas.security?.apikey?.role !== "Administrator") delete req.body.banned; delete req.body.role
-    Actor.findByIdAndUpdate(req.params._id, res.locals.oas.body, { new: true }).then(async actor => {
+    if (res.locals.oas.security?.apikey?.role !== "Administrator") {delete res.locals.oas.body.banned; delete res.locals.oas.body.role}
+    Actor.findByIdAndUpdate(res.locals.oas.params._id, res.locals.oas.body, { new: true }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
         res.status(204).send();
     }).catch(err => {
@@ -68,8 +68,9 @@ export function updateActor(req, res) {
 }
 
 export function deleteActor(req, res) {
-    Actor.findByIdAndRemove(req.params._id).then(actor => {
+    Actor.findByIdAndRemove(res.locals.oas.params._id).then(actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
@@ -106,7 +107,7 @@ export function moneyInPeriod(req, res) {
             },
         },
     ]).then(result => {
-        res.send(result);
+        res.send(result?.[0]?.sum || 0);
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
