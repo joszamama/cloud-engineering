@@ -6,7 +6,8 @@ PROD=false
 BUILD=false
 K8S=false
 DASHBOARD=false
-REPLICAS=1
+REPLICAS=10
+AUTOSCALE=false
 MODE=$1
 
 for i in "${@:2}"; do
@@ -33,7 +34,12 @@ for i in "${@:2}"; do
             DASHBOARD=true
             shift
             ;;
-
+        
+        --auto)
+            AUTOSCALE=true
+            shift
+            ;;
+            
         --replicas=*)
             REPLICAS="${i#*=}"
             shift
@@ -52,7 +58,7 @@ if [ "$MODE" = "deploy" ]; then
         if [ "$K8S" = true ]; then
             kubectl create namespace do2223-c10-dev
             helm install mongo-dev ./helm/mongo-db --set global.infrastructure=do2223-c10-dev --set global.node_env=development
-            helm install backend-dev ./helm/backend --set global.infrastructure=do2223-c10-dev --set global.node_env=development --set firebase_credentials=$FIREBASE_CREDENTIALS
+            helm install backend-dev ./helm/backend --set global.infrastructure=do2223-c10-dev --set global.node_env=development --set firebase_credentials=$FIREBASE_CREDENTIALS --set hpa.enabled=false
         else
             export NODE_ENV=development
             export BACKEND_URL="http://localhost:8081"
@@ -71,7 +77,7 @@ if [ "$MODE" = "deploy" ]; then
             kubectl create namespace do2223-c10-prod
             kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts
             helm install mongo-prod ./helm/mongo-db --set global.infrastructure=do2223-c10-prod --set global.node_env=production
-            helm install backend-prod ./helm/backend --set global.infrastructure=do2223-c10-prod --set global.node_env=production --set firebase_credentials=$FIREBASE_CREDENTIALS
+            helm install backend-prod ./helm/backend --set global.infrastructure=do2223-c10-prod --set global.node_env=production --set firebase_credentials=$FIREBASE_CREDENTIALS --set hpa.enabled=$AUTOSCALE --set hpa.maxReplicas=$REPLICAS
             helm install ingress-prod ./helm/ingress --set global.infrastructure=do2223-c10-prod --set global.node_env=production
         else
             export NODE_ENV=production
@@ -126,6 +132,20 @@ elif [ "$MODE" = "stop" ]; then
         fi
     fi
 
+elif [ "$MODE" = "stress" ]; then
+    regex='https?://[[:alnum:].-]+(/[[:alnum:].-]*)?'
+    if [[ $2 =~ $regex ]]; then
+        if [[ $3 == "-v" ]]; then
+            npx apipecker 5 1000 1000 "$2" -v
+        elif [[ -z $3 ]]; then
+            npx apipecker 5 1000 1000 "$2"
+        else
+            echo "Usage: manage.sh stress [url] [-v]"
+        fi
+    else
+        echo "Usage: manage.sh stress [url] [-v]"
+    fi
+
 elif [ "$MODE" = "scale" ]; then
     if [ "$DEV" = false ] || [ "$PROD" = true ]; then
         kubectl scale deployment do2223-c10-prod-backend --replicas=$REPLICAS -n do2223-c10-prod
@@ -137,5 +157,5 @@ elif [ "$MODE" = "scale" ]; then
 
 
 else
-    echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard]] [--dev|--prod] [--build] | stress [url] [-v] | scale [--dev|--prod] [--replicas=1]] "
+    echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard | --auto]] [--dev |--prod] [--build] | stress [url] [-v] | scale [--dev|--prod] [--replicas=1]] "
 fi

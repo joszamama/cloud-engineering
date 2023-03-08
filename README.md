@@ -1,5 +1,4 @@
-# Simple Devices App
-
+# Acme Explorer App
 This is a simple app that demonstrates how orchestation works between three different containerized services: a web server, a database and the user interface.
 
 ## Contents
@@ -8,9 +7,7 @@ This is a simple app that demonstrates how orchestation works between three diff
 - [Scaling the app](#scaling-the-app)
 - [Simulating stress](#simulating-stress)
     - [DDoS attack simulation](#ddos-attack-simulation)
-- [Testing with KS-API](#testing-with-ks-api)
-    - [Test for one replica and one user](#test-for-one-replica-and-one-user)
-    - [Test for n replicas and m users](#test-for-n-replicas-and-m-users)
+    - [Auto scaling](#auto-scaling)
 - [Monitorization dashboard](#monitorization-dashboard)
 
 ## Deploying the app
@@ -54,7 +51,7 @@ A DDoS attack can be simulated by stressing the app calling the `/crash` endpoin
 
 2. Stress the app calling some endpoint:
 ```
-./manage.sh stress http://localhost/api/v1/devices -v
+./manage.sh stress http://localhost/api/v1/trips -v
 ```
 
 3. Once the requests are returning 200 OK, run stress again calling `/crash`:
@@ -67,67 +64,18 @@ You should see that requests are starting to return 404 and 502 instead of 200, 
 ./manage.sh scale --prod --replicas=10
 ```
 
-## Testing with KS-API
-### Test for one replica and one user
-KS-API calculates np-complete problems and returns the result. It is used to test the app. The following steps describe how to test the app for 1 replica of the ks-api receiving 1 request per second for 1 minute. The objective is to obtain a mean response time of 500ms.
+### Auto scaling
+The app can be scaled automatically if the --auto flag is passed to the `deploy` command. This will create a Horizontal Pod Autoscaler that will scale the app based on the CPU usage. The `stress` command can be used to simulate stress and see how the app scales automatically.
 
-1. Deploy the app with k8s and development mode
+1. Open a terminal and deploy the app with k8s and auto scaling:
 ```
-./manage.sh deploy --k8s --dev
-```
-
-2. Run apipecker to make requests to ks-api
-```
-npx apipecker 1 60 1000 http://localhost:32607/api/v1/stress/M/N
+./manage.sh deploy --k8s --prod --auto
 ```
 
-A mean request time of 500ms has been obtained for M=230000 and N=200000. The following table shows the results for different values of M and N:
-
-| M | N | Mean response time (ms) |
-|---|---|-------------------------|
-| 200000 | 200000 | 410.165 |
-| 220000 | 200000 | 443.169 |
-| 230000 | 200000 | 465.67 |
-| 250000 | 200000 | 522.5 |
-
-### Test for n replicas and m users
-The following steps describe how to test the app for n replicas of the ks-api receiving 1 requests per second from m concurrent users for 1 minute. The objective is to obtain a mean response time of 500ms.
-
-1. Deploy the app with k8s and development mode
+2. Stress the app calling some endpoint:
 ```
-./manage.sh deploy --k8s --dev
+./manage.sh stress http://localhost/api/v1/trips -v
 ```
-
-2. Run apipecker to make requests to ks-api
-```
-npx apipecker m 60 1000 http://localhost:32607/api/v1/stress/M/N
-```
-
-3. Scale the ks-api deployment
-```
-kubectl scale deployment do2223-c10-dev-ks-api --replicas=n -n do2223-c10-dev
-```
-
-The followig table shows the results for different values of M, N, n and m:
-
-| n (replicas) | m (users) | M | N | Mean response time (ms) |
-|--------------|-----------|---|---|-------------------------|
-| 1 | 1 | 100000 | 100000 | 198.309 |
-| 1 | 2 | 100000 | 100000 | 295.426 |
-| 1 | 3 | 100000 | 100000 | 390.419 |
-| 1 | 4 | 100000 | 100000 | 485.653 |
-| 1 | 5 | 100000 | 100000 | 575.527 |
-| 2 | 1 | 100000 | 100000 | 205.06 |
-| 2 | 2 | 100000 | 100000 | 251.365 |
-| 2 | 3 | 100000 | 100000 | 303.552 |
-| 2 | 4 | 100000 | 100000 | 345.949 |
-| 2 | 5 | 100000 | 100000 | 395.157 |
-| 2 | 6 | 100000 | 100000 | 471.887 |
-| 2 | 7 | 100000 | 100000 | 543.225 |
-| ... | ... | ... | ... | ... |
-| 10 | 10 | 100000 | 100000 | 478.842 |
-| 10 | 11 | 100000 | 100000 | 501.266 |
-| 10 | 12 | 100000 | 100000 | 523.285 |
 
 ## Monitorization dashboard
 The `manage.sh` script provides a simple way to deploy a dashboard to monitorize the app.

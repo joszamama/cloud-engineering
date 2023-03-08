@@ -1,4 +1,11 @@
 global:
   infrastructure: "do2223-c10"
   node_env: "development"
+  
 port: "8080"
+
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  averageCpuUtilization: 50
