@@ -12,7 +12,7 @@ MODE=$1
 
 for i in "${@:2}"; do
     case $i in
-        --dev)
+        --preprod)
             DEV=true
             PROD=false
             shift
@@ -46,7 +46,7 @@ for i in "${@:2}"; do
             ;;
         *)
             if [ "$MODE" != "stress" ]; then
-                echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard]] [--dev|--prod] [--build] | stress [url] | scale [--dev|--prod] [--replicas=1]] "
+                echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard]] [--preprod|--prod] [--build] | stress [url] | scale [--preprod|--prod] [--replicas=1]] "
                 exit 1
             fi
             ;;
@@ -56,18 +56,18 @@ done
 if [ "$MODE" = "deploy" ]; then
     if [ "$DEV" = true ] || [ "$PROD" = false ]; then
         if [ "$K8S" = true ]; then
-            kubectl create namespace do2223-c10-dev
-            helm install mongo-dev ./helm/mongo-db --set global.infrastructure=do2223-c10-dev --set global.node_env=development
-            helm install backend-dev ./helm/backend --set global.infrastructure=do2223-c10-dev --set global.node_env=development --set firebase_credentials=$FIREBASE_CREDENTIALS --set hpa.enabled=false
+            kubectl create namespace do2223-c10-preprod
+            helm install mongo-preprod ./helm/mongo-db --set global.infrastructure=do2223-c10-preprod --set global.node_env=development
+            helm install backend-preprod ./helm/backend --set global.infrastructure=do2223-c10-preprod --set global.node_env=development --set firebase_credentials=$FIREBASE_CREDENTIALS --set hpa.enabled=false
         else
             export NODE_ENV=development
             export BACKEND_URL="http://localhost:8081"
             export FRONTEND_PORT=3001
             export PORT=8081
             if [ "$BUILD" = true ]; then
-                docker-compose -p "development-environment" --env-file .env up -d --build
+                docker-compose -p "preprod-environment" --env-file .env up -d --build
             else
-                docker-compose -p "development-environment" --env-file .env up -d
+                docker-compose -p "preprod-environment" --env-file .env up -d
             fi
         fi
     fi
@@ -110,9 +110,9 @@ elif [ "$MODE" = "stop" ]; then
         fi
 
         if [ "$DEV" = true ] || [ "$PROD" = false ]; then
-            helm uninstall mongo-dev
-            helm uninstall backend-dev
-            kubectl delete namespace do2223-c10-dev
+            helm uninstall mongo-preprod
+            helm uninstall backend-preprod
+            kubectl delete namespace do2223-c10-preprod
         fi
 
         if [ "$PROD" = true ] || [ "$DEV" = false ]; then
@@ -152,10 +152,10 @@ elif [ "$MODE" = "scale" ]; then
     fi
 
     if [ "$PROD" = false ] || [ "$DEV" = true ]; then
-        kubectl scale deployment do2223-c10-dev-backend --replicas=$REPLICAS -n do2223-c10-dev
+        kubectl scale deployment do2223-c10-dev-backend --replicas=$REPLICAS -n do2223-c10-preprod
     fi
 
 
 else
-    echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard | --auto]] [--dev |--prod] [--build] | stress [url] [-v] | scale [--dev|--prod] [--replicas=1]] "
+    echo "Usage: manage.sh [deploy|stop [--k8s [--dashboard | --auto]] [--preprod |--prod] [--build] | stress [url] [-v] | scale [--preprod|--prod] [--replicas=1]] "
 fi
