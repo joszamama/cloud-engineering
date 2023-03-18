@@ -152,20 +152,47 @@ paths:
             application/json:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-applications-id-cancel:
+    x-router-controller: ApplicationController
+    patch:
+      security: [apikey: []]
+      tags: [Applications]
+      description: Cancel a single application based on its _id
+      operationId: cancelApplication
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: applicationId
+          description: _id of the application to cancel
+          in: path
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Application paid
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
 schemas:
   application:
     type: object
     required:
-      - id
+      - actor
       - createdAt
+      - id
       - status
+      - trip
     properties:
       id:
         type: string
         readOnly: true
       createdAt:
         type: string
-        format: date
+        format: date-time
+        readOnly: true
       status:
         type: string
         enum: [PENDING, REJECTED, DUE, ACCEPTED, CANCELLED]
@@ -176,5 +203,6 @@ schemas:
         type: string
       actor:
         type: string
+        readOnly: true
       trip:
         type: string

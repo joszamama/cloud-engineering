@@ -80,7 +80,7 @@ paths:
     get:
       security: [apikey: []]
       tags: [ Actors ]
-      description: Returns the number of explorers in a period that match the comparison criteria with the arbitrary money value
+      description: Returns the explorers that match the comparison criteria with the arbitrary money value in a specific period
       operationId: explorersInPeriod
       parameters:
         - required: true
@@ -103,7 +103,7 @@ paths:
           in: query
           schema:
             type: string
-            enum: [">", ">=", "<", "<=", "=", "!="]
+            enum: [">", ">=", "<", "<=", "==", "!="]
         - required: true
           name: money
           description: Arbitrary money value
@@ -112,11 +112,13 @@ paths:
             type: number
       responses:
         200:
-          description: Actor found by _id
+          description: Actor list
           content:
             application/json:
               schema:
-                $ref: '#/schemas/actor'
+                type: array
+                items:
+                  type: object
         default:
           description: Unexpected error
           content:
@@ -253,6 +255,7 @@ schemas:
       - surname
       - password
       - email
+      - role
       - preferredLanguage
     properties:
       id:
@@ -270,34 +273,41 @@ schemas:
         format: email
       role:
         type: string
+        enum: [Administrator, Explorer, Manager, Sponsor]
       phone:
         type: string
+        pattern: ^(\+?\d{1,3}[\s-]?)?\(?\d{2,3}\)?[\s-]?\d{3}[\s-]?\d{2,3}[\s-]?\d{2}$
       address:
         type: string
       banned:
         type: boolean
       preferredLanguage:
         type: string
+        enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
       managedTrips:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './trip.yaml#/schemas/trip'
             - type: string
       applications:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './application.yaml#/schemas/application'
             - type: string
       sponsorships:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './sponsorship.yaml#/schemas/sponsorship'
             - type: string
       finder:
         type: array
+        readOnly: true
         items:
           oneOf:
             - $ref: './finder.yaml#/schemas/finder'

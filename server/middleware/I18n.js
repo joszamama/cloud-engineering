@@ -16,7 +16,9 @@ export default class I18n extends OASBase {
         }
 
         return new I18n(oasDoc, (req, res, next) => {
-            const language = res.locals.oas.security?.apikey?.language ?? req.acceptsLanguages()[0];
+            const token = req.headers.authorization?.split(' ')[1];
+            const decoded = token ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()) : null;
+            const language = decoded?.language ?? req.acceptsLanguages()[0]?.replace(/es/i, "sp");
             const oldSend = res.send;
 
             res.send = (body) => {

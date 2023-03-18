@@ -12,7 +12,7 @@ export default {
     },
     middleware: { 
         router: { disable: false, controllers: "./controllers" },
-        validator: { requestValidation: true, responseValidation: true, strict: false },
+        validator: { requestValidation: true, responseValidation: true, strict: true },
         security: { 
             disable: false, 
             auth: { apikey: (token) => auth.verifyIdToken(token) }

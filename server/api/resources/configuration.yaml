@@ -47,13 +47,13 @@ schemas:
     properties:
       flat_rate:
         type: number
-        min: 0
-        max: 100
+        minimum: 0
+        maximum: 100
       flush_period:
         type: number
-        min: 0
-        max: 24
+        minimum: 0
+        maximum: 24
       max_finder_result:
         type: number
-        min: 0
-        max: 100
+        minimum: 0
+        maximum: 100

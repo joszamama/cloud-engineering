@@ -6,6 +6,14 @@ paths:
       tags: [ Sponsorship ]
       description: Returns all sponsorships
       operationId: getSponsorship
+      parameters:
+        - name: actor
+          x-acl-binding: sponsorshipActor
+          in: query
+          description: Actor id
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: Sponsorship list
@@ -121,11 +129,37 @@ paths:
             application/json:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-sponsorships-id-pay:
+    x-router-controller: SponsorshipController
+    patch:
+      security: [apikey: []]
+      tags: [Sponsorship]
+      description: Pay a single sponsorship based on its _id
+      operationId: paySponsorship
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: sponsorshipId
+          description: _id of the sponsorship to pay
+          in: path
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Sponsorship paid
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
 
 schemas:
   sponsorship:
     type: object
     required:
+      - actor
+      - trip
       - id
     properties:
       id:
@@ -135,7 +169,9 @@ schemas:
         type: string
       link:
         type: string
+        format: uri
       actor:
         type: string
+        readOnly: true
       trip:
         type: string

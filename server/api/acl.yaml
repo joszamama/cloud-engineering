@@ -7,15 +7,19 @@ Anonymous:
 Explorer:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    update:own: ["*"]
   api/v1/applications:
     read:own: ["*"]
     create:any: ["*"]
   api/v1/applications/{_id}:
     read:own: ["*"]
     update:own: ["*"]
-  api/v1/applications/{_id}/pay: # This may be redundant
+  api/v1/applications/{_id}/pay:
+    update:own: ["*"]
+  api/v1/applications/{_id}/cancel:
     update:own: ["*"]
   api/v1/finders:
+    read:own: ["*"]
     create:any: ["*"]
   api/v1/finders/{_id}:
     read:own: ["*"]
@@ -25,6 +29,8 @@ Explorer:
 Manager:
   api/v1/actors/{_id}:
     read:own: ["*"]
+  api/v1/applications:
+    read:any: ["*"] # Can view any application of his own trips
   api/v1/applications/{_id}:
     read:own: ["*"]
     update:own: ["*"] # Can manage applications of his own trips
@@ -47,10 +53,15 @@ Administrator:
     delete:any: ["*"]
   api/v1/applications:
     read:any: ["*"]
+    create:any: ["*"]
   api/v1/applications/{_id}:
     read:any: ["*"]
     update:any: ["*"]
     delete:any: ["*"]
+  api/v1/applications/{_id}/pay:
+    update:any: ["*"]
+  api/v1/applications/{_id}/cancel:
+    update:any: ["*"]
   api/v1/dashboard:
     read:any: ["*"]
   api/v1/config:
@@ -67,14 +78,33 @@ Administrator:
     read:any: ["*"]
     update:any: ["*"]
     delete:any: ["*"]
+  api/v1/trips:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/trips/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/sponsorships:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:any: ["*"]
+    update:any: ["*"]
+    delete:any: ["*"]
+  api/v1/sponsorships/{_id}/pay:
+    update:any: ["*"]
 
 
 Sponsor:
   api/v1/actors/{_id}:
     read:own: ["*"]
   api/v1/sponsorships:
+    read:own: ["*"]
     create:any: ["*"]
   api/v1/sponsorships/{_id}:
     read:own: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
+  api/v1/sponsorships/{_id}/pay:
+    update:own: ["*"]

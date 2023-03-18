@@ -8,7 +8,8 @@ export function login(_req, res) {
     Actor.findOne({ email }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor not found" });
         if (!actor.authenticate(password)) return res.status(401).send({ message: "Invalid password" });
-        admin.auth().createCustomToken(email, { email, role: actor.role, language: actor.preferredLanguage }).then(token => {
+        if (actor.banned) return res.status(401).send({ message: "This account has been banned." });
+        admin.auth().createCustomToken(actor._id.toString(), { role: actor.role, language: actor.preferredLanguage }).then(token => {
             res.status(201).send(token);
         })
     }).catch(err => {
@@ -30,11 +31,12 @@ export function getActor(req, res) {
 
 export function addActor(req, res) {
     let role = res.locals.oas.security?.apikey?.role
-    console.log("Oas body: ", role);
 
     if (![ "Anonymous", "Administrator" ].includes(role)) return res.status(403).send({ message: "Forbidden" });
+    if (role === "Anonymous" && ![ "Explorer", "Sponsor" ].includes(res.locals.oas.body.role)) return res.status(403).send({ message: "Forbidden" });
+    if (role === "Administrator" && ![ "Manager", "Administrator" ].includes(res.locals.oas.body.role)) return res.status(403).send({ message: "Forbidden" });
     
-    Actor.create({ ...res.locals.oas.body, role: role === "Anonymous" ? "Explorer" : "Manager" }).then(() => {
+    Actor.create({ ...res.locals.oas.body, banned: false }).then(() => {
         res.status(201).send();
     }).catch(err => {
         if (err.message?.includes("duplicate key")) return res.status(409).send({ message: "Actor already exists" });
@@ -43,7 +45,7 @@ export function addActor(req, res) {
 }
 
 export function findBy_id(req, res) {
-    Actor.findOne({ _id: req.params._id }).then(async actor => {
+    Actor.findOne({ _id: res.locals.oas.params._id }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor not found" });
         res.send(actor.cleanup());
     }).catch(async err => {
@@ -54,8 +56,8 @@ export function findBy_id(req, res) {
 }
 
 export function updateActor(req, res) {
-    if (res.locals.oas.security?.apikey?.role !== "Administrator") delete req.body.banned
-    Actor.findByIdAndUpdate(req.params._id, req.body, { new: true }).then(async actor => {
+    if (res.locals.oas.security?.apikey?.role !== "Administrator") {delete res.locals.oas.body.banned; delete res.locals.oas.body.role}
+    Actor.findByIdAndUpdate(res.locals.oas.params._id, res.locals.oas.body, { new: true }).then(async actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
         res.status(204).send();
     }).catch(err => {
@@ -66,8 +68,9 @@ export function updateActor(req, res) {
 }
 
 export function deleteActor(req, res) {
-    Actor.findByIdAndRemove(req.params._id).then(actor => {
+    Actor.findByIdAndRemove(res.locals.oas.params._id).then(actor => {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
+        res.status(204).send();
     }).catch(err => {
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
@@ -104,7 +107,7 @@ export function moneyInPeriod(req, res) {
             },
         },
     ]).then(result => {
-        res.send(result);
+        res.send(result?.[0]?.sum || 0);
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

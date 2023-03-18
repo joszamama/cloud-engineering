@@ -62,6 +62,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: tripId
           description: _id of the trip to fetch
           in: path
           schema:
@@ -87,6 +88,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: tripId
           description: _id of the trip to update
           in: path
           schema:
@@ -115,6 +117,7 @@ paths:
       parameters:
         - required: true
           name: _id
+          x-acl-binding: tripId
           description: _id of the trip to delete
           in: path
           schema:
@@ -133,10 +136,8 @@ schemas:
   trip:
     type: object
     required:
-      - ticker
       - title
       - description
-      - price
       - requirements
       - startDate
       - endDate
@@ -151,20 +152,24 @@ schemas:
         type: string
       price:
         type: number
+        readOnly: true
       requirements:
         type: array
         items:
           type: string
       startDate:
         type: string
-        format: date
+        format: date-time
       endDate:
         type: string
-        format: date
+        format: date-time
       pictures:
-        type: string
+        type: array
+        items:
+          type: object
       cancelled:
         type: boolean
+        default: false
       cancelReason:
         type: string
       stages:
@@ -172,8 +177,6 @@ schemas:
         items:
           $ref: "./stage.yaml#/schemas/stage"
       manager:
-        type: string
-      finder:
         type: string
       sponsorships:
         type: array

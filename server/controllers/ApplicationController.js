@@ -20,6 +20,10 @@ export function payApplication(req, res) {
     service.payApplication(req, res);
 }
 
+export function cancelApplication(req, res) {
+    service.cancelApplication(req, res);
+}
+
 export function deleteApplication(req, res) {
     service.deleteApplication(req, res);
 }

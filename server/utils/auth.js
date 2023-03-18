@@ -21,21 +21,26 @@ export async function verifyIdToken(token) {
 export async function checkOwnership(decoded, paramName, paramValue) {
     switch (paramName) {
         case "actorId":
-            return await Actor.findById(paramValue).then(actor => actor?.email === decoded?.email) ?? false;
+            return await Actor.findById(paramValue).then(actor => actor?._id.toString() === decoded?.uid) ?? false;
         case "applicationActor":
-            return await Actor.findOne({ email: decoded?.email }).then(actor => paramValue === actor?._id) ?? false;
+            return await Actor.findById(decoded?.uid).then(actor => paramValue === actor?._id.toString()) ?? false;
         case "applicationId":
             if (decoded?.role === "Explorer") {
-                return await Application.findById(paramValue).then(application => application?.actor?.email === decoded?.email) ?? false;
+                return await Application.findById(paramValue).then(application => application?.actor?._id.toString() === decoded?.uid) ?? false;
             } else if (decoded?.role === "Manager") {
-                return await Actor.findOne({ email: decoded?.email }).then(actor => actor.trips.includes(paramValue)) ?? false;
+                const tripId = await Application.findById(paramValue).then(application => application?.trip?._id.toString());
+                return await Actor.findById(decoded?.uid).then(actor => actor.managedTrips?.map(mt => mt.toString()).includes(tripId)) ?? false;
             }
-        case "ticker":
-            return await Trip.findById(paramValue).then(trip => trip?.manager?.email === decoded?.email) ?? false;
+        case "tripId":
+            return await Trip.findById(paramValue).then(trip => trip?.manager?.toString() === decoded?.uid) ?? false;
         case "finderId":
-            return await Actor.findOne({ email: decoded?.email }).then(actor => actor.finders.includes(paramValue)) ?? false;
+            return await Actor.findById(decoded?.uid).then(actor => actor?.finders.includes(paramValue)) ?? false;
+        case "finderActor":
+            return await Actor.findById(decoded?.uid).then(actor => paramValue === actor?._id.toString()) ?? false;
         case "sponsorshipId":
-            return await Actor.findOne({ email: decoded?.email }).then(actor => actor.sponsorships.includes(paramValue)) ?? false;
+            return await Actor.findById(decoded?.uid).then(actor => actor.sponsorships.includes(paramValue)) ?? false;
+        case "sponsorshipActor":
+            return await Actor.findById(decoded?.uid).then(actor => paramValue === actor?._id.toString()) ?? false;
         default:
             return false;
     }
