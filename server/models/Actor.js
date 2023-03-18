@@ -35,9 +35,9 @@ ActorSchema.methods.cleanup = function () {
         address: this.address,
         banned: this.banned,
         preferredLanguage: this.preferredLanguage,
-        ...(this.role === "Manager" ? { managedTrips: this.managedTrips } : {}),
-        ...(this.role === "Explorer" ? { applications: this.applications, finders: this.finders } : {}),
-        ...(this.role === "Sponsor" ? { sponsorships: this.sponsorships } : {})
+        ...(this.role === "Manager" ? { managedTrips: this.managedTrips.map(s => s.toString()) } : {}),
+        ...(this.role === "Explorer" ? { applications: this.applications.map(s => s.toString()), finders: this.finders.map(s => s.toString()) } : {}),
+        ...(this.role === "Sponsor" ? { sponsorships: this.sponsorships.map(s => s.toString())} : {})
     };
 }
 
