@@ -24,7 +24,7 @@ admin.initializeApp({credential: admin.credential.cert(firebaseConfig)})
 
 // Connect to database
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
+await mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
     autoIndex: process.env.NODE_ENV === 'production' ? false : true
 }).then(async () => {
     //await populateDB();
