@@ -17,7 +17,7 @@ export default (env) => ({
             disable: false, 
             auth: { apikey: (token) => auth.verifyIdToken(token) }
         },
-        swagger: { disable: false, path: "/docs", ui: { customCss: null, customJs: null } },
+        swagger: { disable: env === "test", path: "/docs", ui: { customCss: null, customJs: null } },
         error: { disable: false, printStackTrace: false, customHandler: null },
         external: {
             OASBearerJWT: { checkOwnership: (decoded, paramName, paramValue) => auth.checkOwnership(decoded, paramName, paramValue) }

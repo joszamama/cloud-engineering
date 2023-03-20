@@ -23,9 +23,9 @@ const deploy = async (env) => {
     /* OAS Tools initialization */
     initialize(app, config).then(() => {
         http.createServer(app).listen(serverPort, () => {
-        console.log("\nApp running at http://localhost:" + serverPort);
-        console.log("________________________________________________________________");
         if (!config.middleware.swagger?.disable) {
+            console.log("\nApp running at http://localhost:" + serverPort);
+            console.log("________________________________________________________________");
             console.log('API docs (Swagger UI) available on http://localhost:' + serverPort + config.middleware.swagger.path);
             console.log("________________________________________________________________");
         }
