@@ -131,7 +131,257 @@ paths:
             application/json:
               schema:
                 $ref: "../oas-doc.yaml#/components/schemas/error"
+  
+  api-v2-trips-mine-questions:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns the questions of my trips
+      operationId: getQuestionsFromMyTrips
+      parameters:
+      responses:
+        200:
+          description: Question list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+              
+  api-v1-trips-id-questions:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns all questions of a trip
+      operationId: getQuestionsFromTrip
+      parameters:
+        - required: true
+          name: trip_id
+          x-acl-binding: tripId
+          description: _id of the trip to find
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Question list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+    post:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Post a question in a trip
+      operationId: postQuestionFromTrip
+      parameters:
+        - required: true
+          name: trip_id
+          x-acl-binding: tripId
+          description: _id of the trip to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Question to be created
+        required: true
+      responses:
+        "204":
+          description: Question created
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
 
+  api-v1-trips-id-questions-id:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns an specific question of a trip
+      operationId: getQuestionsFromTripById
+      parameters:
+        - required: true
+          name: trip_id
+          x-acl-binding: tripId
+          description: _id of the trip to find
+          in: path
+          schema:
+            type: string
+        - required: true
+          name: question_id
+          x-acl-binding: questionId
+          description: _id of the question to find in trip
+          in: path
+          schema:
+            type: string
+      responses:
+        200:
+          description: Question object
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+               
+  api-v1-trips-id-questions-id-reply:
+    x-router-controller: TripController
+    get:
+      tags: [Trips]
+      description: Returns an specific question of a trip
+      operationId: getQuestionsFromTripById
+      parameters:
+        - required: true
+          name: trip_id
+          x-acl-binding: tripId
+          description: _id of the trip to find
+          in: path
+          schema:
+            type: string
+        - required: true
+          name: question_id
+          x-acl-binding: questionId
+          description: _id of the question to find in trip
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Question to be created
+        required: true
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+    post:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Post a reply in a trip
+      operationId: postReplyFromTrip
+      parameters:
+        - required: true
+          name: trip_id
+          x-acl-binding: tripId
+          description: _id of the trip to reply
+          in: path
+          schema:
+            type: string
+        - required: true
+          name: question_id
+          x-acl-binding: questionId
+          description: _id of the question to reply
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Reply to be created
+        required: true
+      responses:
+        "204":
+          description: Reply created
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-replies-id:
+    x-router-controller: TripController
+    put:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Update a reply based on its _id
+      operationId: updateReplyFromTrip
+      parameters:
+        - required: true
+          name: reply_id
+          x-acl-binding: replyId
+          description: _id of the reply to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Reply to be updated
+        required: true
+      responses:
+        "204":
+          description: Reply updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-questions-id:
+    x-router-controller: TripController
+    put:
+      security: [apikey: []]
+      tags: [Trips]
+      description: Update a reply based on its _id
+      operationId: updateQuestionFromTrip
+      parameters:
+        - required: true
+          name: question_id
+          x-acl-binding: questionId
+          description: _id of the reply to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        description: Question to be updated
+        required: true
+      responses:
+        "204":
+          description: Question updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+        
 schemas:
   trip:
     type: object

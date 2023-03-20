@@ -20,18 +20,18 @@ if (!process.env.FIREBASE_CREDENTIALS || !process.env.JSON_GENERATOR_TOKEN) {
 
 // Initialize Firebase
 const firebaseConfig = JSON.parse(Buffer.from(process.env.FIREBASE_CREDENTIALS, 'base64').toString());
-admin.initializeApp({credential: admin.credential.cert(firebaseConfig)})
+admin.initializeApp({ credential: admin.credential.cert(firebaseConfig) })
 
 // Connect to database
 mongoose.set('strictQuery', false);
-mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
+await mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
     autoIndex: process.env.NODE_ENV === 'production' ? false : true
 }).then(async () => {
     //await populateDB();
 
     // Create manager and trip 
     await Actor.create({
-        _id:  "5f9f1b9b9b9b9b9b9b9b9b9a",
+        _id: "5f9f1b9b9b9b9b9b9b9b9b9a",
         name: "Manager",
         surname: "Manager",
         password: "test1234",
@@ -40,8 +40,9 @@ mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-
         phone: "+34 123456780",
         address: "Calle test 123",
         banned: false,
-        preferredLanguage: "English"})
-    
+        preferredLanguage: "English"
+    })
+
     await Trip.create({
         _id: "5f9f1b9b9b9b9b9b9b9b9b9b",
         title: "Test trip",
@@ -54,7 +55,7 @@ mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-
         isPublished: true,
         stages: [],
     });
-        
+
     // Cleans db after tests
     const oldExit = process.exit;
     process.exit = async (code) => {

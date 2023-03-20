@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import axios from "axios";
 
 describe("Actor Test suite", () => {
-    
     before(() => {
         // Wait for the service to start
         let delay = new Promise(resolve => setTimeout(resolve, 3000))

@@ -9,6 +9,7 @@ const TripSchema = new mongoose.Schema({
     title: { type: String, required: [true, "can't be blank"] },
     description: { type: String, required: [true, "can't be blank"] },
     price: Number,
+    questions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
     requirements: { type: [String], required: [true, "can't be blank"] },
     startDate: { type: Date, required: [true, "can't be blank"] },
     endDate: {
@@ -38,11 +39,13 @@ TripSchema.methods.cleanup = async function () {
     this.sponsorships = this.sponsorships[randomIndex]
 
     return {
+        _id : this._id,
         ticker: this.ticker,
         title: this.title,
         description: this.description,
         price: this.price,
         requirements: this.requirements,
+        questions: this.questions,
         startDate: this.startDate?.toISOString(),
         endDate: this.endDate?.toISOString(),
         pictures: this.pictures?.map(b => b.toJSON()),

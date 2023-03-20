@@ -15,6 +15,12 @@ paths:
   /api/v1/sponsorships/{_id}/pay: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships-id-pay}
   /api/v1/trips: {$ref: resources/trip.yaml#/paths/api-v1-trips}
   /api/v1/trips/{_id}: {$ref: resources/trip.yaml#/paths/api-v1-trips-id}
+  /api/v1/trips/{trip_id}/questions: {$ref: resources/trip.yaml#/paths/api-v1-trips-id-questions}
+  /api/v2/trips/mine/questions: {$ref: resources/trip.yaml#/paths/api-v2-trips-mine-questions}
+  /api/v1/trips/{trip_id}/questions/{question_id}: {$ref: resources/trip.yaml#/paths/api-v1-trips-id-questions-id}
+  /api/v1/trips/{trip_id}/questions/{question_id}/reply: {$ref: resources/trip.yaml#/paths/api-v1-trips-id-questions-id-reply}
+  /api/v1/replies/{reply_id}: {$ref: resources/trip.yaml#/paths/api-v1-replies-id}
+  /api/v1/questions/{question_id}: {$ref: resources/trip.yaml#/paths/api-v1-questions-id}
   /api/v1/applications: {$ref: resources/application.yaml#/paths/api-v1-applications}
   /api/v1/applications/{_id}: {$ref: resources/application.yaml#/paths/api-v1-applications-id}
   /api/v1/applications/{_id}/pay: {$ref: resources/application.yaml#/paths/api-v1-applications-id-pay}
@@ -23,6 +29,8 @@ paths:
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
   /api/v1/config: {$ref: resources/configuration.yaml#/paths/api-v1-config}
   /api/v1/dashboard: {$ref: resources/dashboard.yaml#/paths/api-v1-dashboard}
+
+
 
 components:
   securitySchemes:

@@ -20,3 +20,30 @@ export function deleteTrip(req, res) {
     service.deleteTrip(req, res);
 }
 
+export function getQuestionsFromTrip(req, res) {
+    service.getQuestionsFromTrip(req, res);
+}
+
+export function getQuestionsFromTripById(req, res) {
+    service.getQuestionsFromTripById(req, res);
+}
+
+export function postQuestionFromTrip(req, res) {
+    service.postQuestionFromTrip(req, res);
+}
+
+export function getQuestionsFromMyTrips(req, res) {
+    service.getQuestionsFromMyTrips(req, res);
+}
+
+export function postReplyFromTrip(req, res) {
+    service.postReplyFromTrip(req, res);
+}
+
+export function updateReplyFromTrip(req, res) {
+    service.updateReplyFromTrip(req, res);
+}
+
+export function updateQuestionFromTrip(req, res) {
+    service.updateQuestionFromTrip(req, res);
+}
