@@ -1,12 +1,12 @@
 import * as auth from "./utils/auth.js";
 
-export default {
+export default (env) => ({
     packageJSON: "package.json",
     oasFile: "api/oas-doc.yaml",
     useAnnotations: false,
     logger: {
         customLogger: null,
-        level: "info",
+        level: env === "test" ? "off" : "info",
         logFile: false,
         logFilePath: "./logs/oas-tools.log"
     },
@@ -23,4 +23,4 @@ export default {
             OASBearerJWT: { checkOwnership: (decoded, paramName, paramValue) => auth.checkOwnership(decoded, paramName, paramValue) }
         }
     }
-}
+})

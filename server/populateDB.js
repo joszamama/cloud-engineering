@@ -6,15 +6,17 @@ import Finder from "./models/Finder.js";
 import Application from "./models/Application.js";
 
 /* Connect to mongo and populate */
-mongoose.set('strictQuery', false);
-mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
-    autoIndex: process.env.NODE_ENV === 'production' ? false : true
-}).then(() => {
-    populateDB().then(() => mongoose.disconnect());
-});
+if (process.env.NODE_ENV !== "test") { 
+    mongoose.set('strictQuery', false);
+    mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
+        autoIndex: process.env.NODE_ENV === 'production' ? false : true
+    }).then(() => {
+        populateDB().then(() => mongoose.disconnect());
+    });
+}
 
 /* Populate function */
-async function populateDB() {
+export async function populateDB() {
     const headers = { Authorization: `Bearer ${process.env.JSON_GENERATOR_TOKEN}` };
     await Promise.all([
         fetch("https://api.json-generator.com/templates/NMbSBEZ0vfT2/data", { headers }).then(response => response.json()), // trips
