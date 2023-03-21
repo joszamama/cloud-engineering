@@ -3,6 +3,9 @@ Anonymous:
     create:any: ["*"]
   api/v1/actors:
     create:any: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
 
 Explorer:
   api/v1/actors/{_id}:
@@ -25,6 +28,15 @@ Explorer:
     read:own: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:own: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/replies/{_id}:
+    update:own: ["*"]
 
 Manager:
   api/v1/actors/{_id}:
@@ -41,7 +53,17 @@ Manager:
     read:any: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
-  
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:own: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/questions/{_id}/ban:
+    update:any: ["*"]
+  /api/v1/replies/{_id}/ban:
+    update:any: ["*"]
 
 Administrator:
   api/v1/actors:
@@ -94,7 +116,15 @@ Administrator:
     delete:any: ["*"]
   api/v1/sponsorships/{_id}/pay:
     update:any: ["*"]
-
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:any: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/replies/{_id}:
+    update:any: ["*"]
 
 Sponsor:
   api/v1/actors/{_id}:
@@ -108,3 +138,6 @@ Sponsor:
     delete:own: ["*"]
   api/v1/sponsorships/{_id}/pay:
     update:own: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
