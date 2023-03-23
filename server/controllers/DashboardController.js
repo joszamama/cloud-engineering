@@ -17,15 +17,15 @@ setInterval(async () => {
 
   new Dashboard({
     trip_average: managedTrips[0].avg,
-    trip_minium: managedTrips[0].min,
+    trip_minimum: managedTrips[0].min,
     trip_maximum: managedTrips[0].max,
     trip_deviation: managedTrips[0].std ?? 0,
     application_average: tripsApplications[0].avg,
-    application_minium: tripsApplications[0].min,
+    application_minimum: tripsApplications[0].min,
     application_maximum: tripsApplications[0].max,
     application_deviation: tripsApplications[0].std ?? 0,
     trip_price_average: tripsPrice[0].avg,
-    trip_price_minium: tripsPrice[0].min,
+    trip_price_minimum: tripsPrice[0].min,
     trip_price_maximum: tripsPrice[0].max,
     trip_price_deviation: tripsPrice[0].std ?? 0,
     ratio_by_status: Object.fromEntries(appMetrics[0].ids.map((id, index) => ([id, appMetrics[0].ratios[index]]))),
