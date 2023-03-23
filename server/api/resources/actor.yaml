@@ -256,7 +256,6 @@ schemas:
       - password
       - email
       - role
-      - preferredLanguage
     properties:
       id:
         type: string
@@ -284,6 +283,7 @@ schemas:
       preferredLanguage:
         type: string
         enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
+        default: English
       managedTrips:
         type: array
         readOnly: true
