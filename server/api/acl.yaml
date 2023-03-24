@@ -8,6 +8,7 @@ Explorer:
   api/v1/actors/{_id}:
     read:own: ["*"]
     update:own: ["*"]
+    delete:own: ["*"]
   api/v1/applications:
     read:own: ["*"]
     create:any: ["*"]
@@ -29,6 +30,7 @@ Explorer:
 Manager:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    delete:own: ["*"]
   api/v1/applications:
     read:any: ["*"] # Can view any application of his own trips
   api/v1/applications/{_id}:
