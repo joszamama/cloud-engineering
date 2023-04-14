@@ -29,6 +29,7 @@ const TripSchema = new mongoose.Schema({
     manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Actor' },
     sponsorships: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsorship' }],
     applications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Application' }],
+    questions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }]
 }, { timestamps: true });
 
 TripSchema.methods.cleanup = async function () {
@@ -52,7 +53,8 @@ TripSchema.methods.cleanup = async function () {
         stages: this.stages,
         manager: this.manager?.toString(),
         sponsorships: this.sponsorships?.map(s => s.toString()),
-        applications: this.applications?.map(a => a.toString())
+        applications: this.applications?.map(a => a.toString()),
+        questions: this.questions?.map(q => q.toString()),
     };
 }
 

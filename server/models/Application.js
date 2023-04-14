@@ -30,6 +30,9 @@ ApplicationSchema.pre('save', async function () {
     if (Object.keys(this.getChanges()?.["$set"] ?? {}).includes("createdAt")) { // New application
         await Actor.findByIdAndUpdate(this.actor, { $push: { applications: this._id } }).exec();
         await Trip.findByIdAndUpdate(this.trip, { $push: { applications: this._id } }).exec();
+
+        let trip = await Find.findById(this.trip).exec();
+        await Actor.findByIdAndUpdate(trip.manager, { $push: { applications: this._id } }).exec();        
     }
 });
 
