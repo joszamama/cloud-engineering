@@ -1,0 +1,106 @@
+paths:
+  api-v1-replies:
+    x-router-controller: ReplyController
+    post:
+      tags: [Replies]
+      security: [apikey: []]
+      description: Creates a new reply
+      operationId: addReply
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/reply"
+        description: Reply to be created
+        required: true
+      responses:
+        201:
+          description: Reply
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-replies-id:
+    x-router-controller: ReplyController
+    put:
+      security: [apikey: []]
+      tags: [Replies]
+      description: Update a reply based on its _id
+      operationId: updateReply
+      parameters:
+        - required: true
+          name: _id
+          x-acl-binding: replyId
+          description: _id of the reply to update
+          in: path
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/schemas/reply"
+        description: Reply to be updated
+        required: true
+      responses:
+        "204":
+          description: Reply updated
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+  api-v1-replies-id-ban:
+    x-router-controller: ReplyController
+    patch:
+      security: [apikey: []]
+      tags: [Replies]
+      description: Ban a reply based on its _id
+      operationId: banReply
+      parameters:
+        - required: true
+          name: _id
+          description: _id of the reply to ban
+          in: path
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Reply banned
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "../oas-doc.yaml#/components/schemas/error"
+
+schemas:
+  reply:
+    type: object
+    required:
+      - id
+      - text
+      - banned
+      - question
+    properties:
+      id:
+        type: string
+        readOnly: true
+      text:
+        type: string
+      banned:
+        type: boolean
+        default: false
+      question:
+        type: string
+      author:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
