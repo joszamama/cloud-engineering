@@ -78,6 +78,17 @@ export function deleteActor(req, res) {
     });
 }
 
+export function deleteByEmail(req, res) {
+    Actor.findOneAndDelete({ email: res.locals.oas.params.email }).then(actor => {
+        if (!actor) return res.status(404).send({ message: "Actor Not Found" });
+        res.status(204).send();
+    }).catch(err => {
+        return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
+            message: err.message
+        });
+    });
+}
+
 export function moneyInPeriod(req, res) {
     let { _id, startDate, endDate } = res.locals.oas.params;
 
