@@ -12,6 +12,8 @@ Explorer:
     read:own: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
+    delete:own: ["*"]
   api/v1/applications:
     read:own: ["*"]
     create:any: ["*"]
@@ -42,6 +44,8 @@ Explorer:
 Manager:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
     delete:own: ["*"]
   api/v1/applications:
     read:any: ["*"] # Can view any application of his own trips
@@ -74,6 +78,8 @@ Administrator:
   api/v1/actors/{_id}:
     read:any: ["*"]
     update:any: ["*"]
+    delete:any: ["*"]
+  api-v1-actors-deleteByEmail:
     delete:any: ["*"]
   api/v1/applications:
     read:any: ["*"]
@@ -131,6 +137,10 @@ Administrator:
 Sponsor:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
+    delete:own: ["*"]
   api/v1/sponsorships:
     read:own: ["*"]
     create:any: ["*"]
