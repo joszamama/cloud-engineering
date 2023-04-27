@@ -53,14 +53,12 @@ paths:
   api-v1-sponsorships-id:
     x-router-controller: SponsorshipController
     get:
-      security: [apikey: []]
       tags: [ Sponsorship ]
       description: Returns a single sponsorship by its _id
       operationId: findSponsorshipBy_id
       parameters:
         - required: true
           name: _id
-          x-acl-binding: sponsorshipId
           description: _id of the sponsorship to fetch
           in: path
           schema:
