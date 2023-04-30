@@ -46,7 +46,7 @@ ApplicationSchema.pre('findOneAndUpdate', async function (next) {
     if (["DUE", "REJECTED"].includes(newApplication.status) && application.status === "PENDING") {
         if (newApplication.status === "REJECTED" && newApplication.rejectReason === undefined) throw new Error("Invalid application update");
         else next();
-    } else if (application.status === "ACCEPTED" && newApplication.status === "CANCELLED" || application.status === "DUE" && newApplication.status === "ACCEPTED" || application.status === "PENDING" && newApplication.status === "CANCELLED") {
+    } else if (application.status === "DUE" && newApplication.status === "CANCELLED" || application.status === "DUE" && newApplication.status === "ACCEPTED" || application.status === "PENDING" && newApplication.status === "CANCELLED") {
         next();
     } else {
         throw new Error("Invalid application update");
