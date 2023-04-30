@@ -83,6 +83,7 @@ export function deleteByEmail(req, res) {
         if (!actor) return res.status(404).send({ message: "Actor Not Found" });
         res.status(204).send();
     }).catch(err => {
+        console.log("Error: ", err);
         return res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message
         });
