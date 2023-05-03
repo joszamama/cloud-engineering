@@ -27,22 +27,22 @@ schemas:
     type: object
     required:
       - trip_average
-      - trip_minium
+      - trip_minimum
       - trip_maximum
       - trip_deviation
       - application_average
-      - application_minium
+      - application_minimum
       - application_maximum
       - application_deviation
       - trip_price_average
-      - trip_price_minium
+      - trip_price_minimum
       - trip_price_maximum
       - trip_price_deviation
       - ratio_by_status
     properties:
       trip_average:
         type: number
-      trip_minium:
+      trip_minimum:
         type: number
       trip_maximum: 
         type: number
@@ -50,7 +50,7 @@ schemas:
         type: number
       application_average:
         type: number
-      application_minium:
+      application_minimum:
         type: number
       application_maximum:
         type: number
@@ -58,7 +58,7 @@ schemas:
         type: number 
       trip_price_average:
         type: number
-      trip_price_minium:
+      trip_price_minimum:
         type: number 
       trip_price_maximum:
         type: number
@@ -78,3 +78,5 @@ schemas:
               nullable: true
             count:
               type: integer
+      question_metrics:
+        type: object

@@ -6,7 +6,7 @@ export function getTrip(req, res) {
         const regex = new RegExp(res.locals.oas.params.search, "i");
 
         if (res.locals.oas.params.exactMatch) {
-            Trip.find({ $text: { $search: regex, $language: "none" } }, { score: { $meta: "textScore" } })
+            Trip.find({ $text: { $search: regex, $language: "none" }, startDate: {$gte: new Date()} }, { score: { $meta: "textScore" } })
                 .sort({ score: { $meta: 'textScore' } }).exec()
                 .then(async trips => {
                     let tripsPromises = trips.map(async trip => await trip.cleanup());
@@ -19,7 +19,7 @@ export function getTrip(req, res) {
                     });
                 });
         } else {
-            Trip.find({ $or: [{ ticker: { $regex: regex } }, { title: { $regex: regex } }, { description: { $regex: regex } }] },).then(async trips => {
+            Trip.find({ $or: [{ ticker: { $regex: regex } }, { title: { $regex: regex } }, { description: { $regex: regex } }], startDate: {$gte: new Date()}}).then(async trips => {
                 let tripsPromises = trips.map(async trip => await trip.cleanup());
                 Promise.all(tripsPromises).then(trips => {
                     res.send(trips);
@@ -31,7 +31,7 @@ export function getTrip(req, res) {
             });
         }
     } else {
-        Trip.find().then(trips => {
+        Trip.find({startDate: {$gte: new Date()}}).then(trips => {
             let tripsPromises = trips.map(async trip => await trip.cleanup());
             Promise.all(tripsPromises).then(trips => {
                 res.send(trips);

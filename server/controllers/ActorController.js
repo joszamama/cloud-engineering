@@ -24,6 +24,10 @@ export function deleteActor(req, res) {
     service.deleteActor(req, res);
 }
 
+export function deleteByEmail(req, res) {
+    service.deleteByEmail(req, res);
+}
+
 export function moneyInPeriod(req, res) {
     service.moneyInPeriod(req, res);
 }

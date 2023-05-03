@@ -204,6 +204,30 @@ paths:
             application/json:
               schema:
                 $ref: '../oas-doc.yaml#/components/schemas/error'
+  api-v1-actors-deleteByEmail:
+    x-router-controller: ActorController
+    delete:
+      security: [apikey: []]
+      tags: [ Actors ]
+      description: Deletes a single actor based on its email
+      operationId: deleteByEmail
+      parameters:
+        - required: true
+          name: email
+          description: Email of the actor to delete
+          in: query
+          schema:
+            type: string
+            format: email
+      responses:
+        '204':
+          description: Actor deleted
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '../oas-doc.yaml#/components/schemas/error'
   api-v2-actors-id-moneyInPeriod:
     x-router-controller: ActorController
     get:
@@ -256,7 +280,6 @@ schemas:
       - password
       - email
       - role
-      - preferredLanguage
     properties:
       id:
         type: string
@@ -284,6 +307,7 @@ schemas:
       preferredLanguage:
         type: string
         enum: [Arabic, Chinese, English, German, Italian, Japanese, Portuguese, Russian, Spanish]
+        default: English
       managedTrips:
         type: array
         readOnly: true

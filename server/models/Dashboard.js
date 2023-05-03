@@ -5,41 +5,43 @@ import Application from "./Application.js";
 
 const DashboardSchema = new mongoose.Schema({
     trip_average: { type: Number, required: true },
-    trip_minium: { type: Number, required: true },
+    trip_minimum: { type: Number, required: true },
     trip_maximum: { type: Number, required: true },
     trip_deviation: { type: Number, required: true },
     application_average: { type: Number, required: true },
-    application_minium: { type: Number, required: true },
+    application_minimum: { type: Number, required: true },
     application_maximum: { type: Number, required: true },
     application_deviation: { type: Number, required: true },
     trip_price_average: { type: Number, required: true },
-    trip_price_minium: { type: Number, required: true },
+    trip_price_minimum: { type: Number, required: true },
     trip_price_maximum: { type: Number, required: true },
     trip_price_deviation: { type: Number, required: true },
     ratio_by_status: { type: Object, required: true },
     price_range_average: { type: Object, required: true },
-    top10_finder_keywords: { type: Array, required: true }
+    top10_finder_keywords: { type: Array, required: true },
+    question_metrics: { type: Object, required: true }
 }, {
     timestamps: true,
-    statics: { getApplicationMetrics, getTripMetrics, getFinderMetrics }
+    statics: { getApplicationMetrics, getTripMetrics, getFinderMetrics, getQuestionMetrics }
 });
 
-DashboardSchema.methods.cleanup = function() {
+DashboardSchema.methods.cleanup = function () {
     return {
         id: this._id,
         trip_average: this.trip_average,
-        trip_minium: this.trip_minium,
+        trip_minimum: this.trip_minimum,
         trip_maximum: this.trip_maximum,
         trip_deviation: this.trip_deviation,
         application_average: this.application_average,
-        application_minium: this.application_minium,
+        application_minimum: this.application_minimum,
         application_maximum: this.application_maximum,
         application_deviation: this.application_deviation,
         trip_price_average: this.trip_price_average,
-        trip_price_minium: this.trip_price_minium,
+        trip_price_minimum: this.trip_price_minimum,
         trip_price_maximum: this.trip_price_maximum,
         trip_price_deviation: this.trip_price_deviation,
         ratio_by_status: this.ratio_by_status,
+        question_metrics: this.question_metrics,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
@@ -168,7 +170,7 @@ function getTripMetrics() {
     }])
 }
 
-function getFinderMetrics () {
+function getFinderMetrics() {
     return Finder.aggregate([
         {
             $facet: {
@@ -204,3 +206,20 @@ function getFinderMetrics () {
     ]);
 }
 
+function getQuestionMetrics() {
+    return Trip.aggregate([
+        {
+            $group: {
+                _id: "$cancelled",
+                count: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                count: -1,
+            },
+        },
+    ]);
+}

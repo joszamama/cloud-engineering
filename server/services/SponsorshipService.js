@@ -1,7 +1,7 @@
 import Sponsorship from '../models/Sponsorship.js';
 
 export function getSponsorship(req, res) {
-    Sponsorship.find(res.locals.oas.params.actor ? {actor: res.locals.oas.params?.actor, isPaid: true} : {}).then(sponsorships => {
+    Sponsorship.find(res.locals.oas.params.actor ? {actor: res.locals.oas.params?.actor} : {}).then(sponsorships => {
         res.send(sponsorships.map(sponsorship => sponsorship.cleanup()));
     }).catch(err => {
         console.log(err);

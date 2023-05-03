@@ -3,11 +3,19 @@ Anonymous:
     create:any: ["*"]
   api/v1/actors:
     create:any: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:any: ["*"]
 
 Explorer:
   api/v1/actors/{_id}:
     read:own: ["*"]
     update:own: ["*"]
+    delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
+    delete:own: ["*"]
   api/v1/applications:
     read:own: ["*"]
     create:any: ["*"]
@@ -25,10 +33,24 @@ Explorer:
     read:own: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
+  api/v1/sponsorships/{_id}:
+    read:any: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:own: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/replies/{_id}:
+    update:own: ["*"]
 
 Manager:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
+    delete:own: ["*"]
   api/v1/applications:
     read:any: ["*"] # Can view any application of his own trips
   api/v1/applications/{_id}:
@@ -41,7 +63,19 @@ Manager:
     read:any: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
-  
+  api/v1/sponsorships/{_id}:
+    read:any: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:own: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/questions/{_id}/ban:
+    update:any: ["*"]
+  /api/v1/replies/{_id}/ban:
+    update:any: ["*"]
 
 Administrator:
   api/v1/actors:
@@ -50,6 +84,8 @@ Administrator:
   api/v1/actors/{_id}:
     read:any: ["*"]
     update:any: ["*"]
+    delete:any: ["*"]
+  api-v1-actors-deleteByEmail:
     delete:any: ["*"]
   api/v1/applications:
     read:any: ["*"]
@@ -94,17 +130,32 @@ Administrator:
     delete:any: ["*"]
   api/v1/sponsorships/{_id}/pay:
     update:any: ["*"]
-
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]
+  /api/v1/questions/{_id}:
+    update:any: ["*"]
+  /api/v1/replies:
+    create:any: ["*"]
+  /api/v1/replies/{_id}:
+    update:any: ["*"]
 
 Sponsor:
   api/v1/actors/{_id}:
     read:own: ["*"]
+    update:own: ["*"]
+    delete:own: ["*"]
+  api-v1-actors-deleteByEmail:
+    delete:own: ["*"]
   api/v1/sponsorships:
     read:own: ["*"]
     create:any: ["*"]
   api/v1/sponsorships/{_id}:
-    read:own: ["*"]
+    read:any: ["*"]
     update:own: ["*"]
     delete:own: ["*"]
   api/v1/sponsorships/{_id}/pay:
     update:own: ["*"]
+  /api/v1/questions:
+    read:any: ["*"]
+    create:any: ["*"]

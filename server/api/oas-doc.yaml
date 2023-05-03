@@ -8,6 +8,7 @@ paths:
   /api/v1/login: {$ref: resources/actor.yaml#/paths/api-v1-login}
   /api/v1/actors: {$ref: resources/actor.yaml#/paths/api-v1-actors}
   /api/v1/actors/{_id}: {$ref: resources/actor.yaml#/paths/api-v1-actors-id}
+  /api/v1/actors/deleteByEmail: {$ref: resources/actor.yaml#/paths/api-v1-actors-deleteByEmail}
   /api/v2/actors/explorersInPeriod: {$ref: resources/actor.yaml#/paths/api-v2-actors-explorersInPeriod}
   /api/v2/actors/{_id}/moneyInPeriod: {$ref: resources/actor.yaml#/paths/api-v2-actors-id-moneyInPeriod}
   /api/v1/sponsorships: {$ref: resources/sponsorship.yaml#/paths/api-v1-sponsorships}
@@ -23,6 +24,12 @@ paths:
   /api/v1/finders/{_id}: {$ref: resources/finder.yaml#/paths/api-v1-finders-id}
   /api/v1/config: {$ref: resources/configuration.yaml#/paths/api-v1-config}
   /api/v1/dashboard: {$ref: resources/dashboard.yaml#/paths/api-v1-dashboard}
+  /api/v1/questions: {$ref: resources/question.yaml#/paths/api-v1-questions}
+  /api/v1/questions/{_id}: {$ref: resources/question.yaml#/paths/api-v1-questions-id}
+  /api/v1/questions/{_id}/ban: {$ref: resources/question.yaml#/paths/api-v1-questions-id-ban}
+  /api/v1/replies: {$ref: resources/reply.yaml#/paths/api-v1-replies}
+  /api/v1/replies/{_id}: {$ref: resources/reply.yaml#/paths/api-v1-replies-id}
+  /api/v1/replies/{_id}/ban: {$ref: resources/reply.yaml#/paths/api-v1-replies-id-ban}
 
 components:
   securitySchemes:
@@ -40,6 +47,8 @@ components:
     finder: {$ref: resources/finder.yaml#/schemas/finder}
     configuration: {$ref: resources/configuration.yaml#/schemas/configuration}
     dashboard: {$ref: resources/dashboard.yaml#/schemas/dashboard}
+    question: {$ref: resources/question.yaml#/schemas/question}
+    reply: {$ref: resources/reply.yaml#/schemas/reply}
     error:
       type: object
       required:

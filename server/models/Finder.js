@@ -43,6 +43,7 @@ TripSchema.methods.cleanup = async function () {
     this.sponsorships = this.sponsorships[randomIndex]
 
     return {
+        id: this._id.toString(),
         ticker: this.ticker,
         title: this.title,
         description: this.description,
