@@ -16,7 +16,7 @@ export function addFinder(req, res) {
     res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
 
     Finder.create(res.locals.oas.body).then(finder => {
-        res.status(201).send();
+        res.status(201).send(finder.cleanup());
     }).catch(err => {
         console.log(err)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

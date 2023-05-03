@@ -42,8 +42,8 @@ export async function addApplication(req, res) {
     if (trip.startDate < new Date()) return res.status(400).send({ message: "The trip you are trying to apply to has already started" });
     if (trip.cancelled) return res.status(400).send({ message: "The trip you are trying to apply to has been cancelled" });
 
-    Application.create(res.locals.oas.body).then(() => {
-        res.status(201).send();
+    Application.create(res.locals.oas.body).then((app) => {
+        res.status(201).send(app.cleanup());
     }).catch(err => {
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error
             message: err.message

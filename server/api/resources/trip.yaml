@@ -166,7 +166,7 @@ schemas:
       pictures:
         type: array
         items:
-          type: object
+          type: string
       cancelled:
         type: boolean
         default: false

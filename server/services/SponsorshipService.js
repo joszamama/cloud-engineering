@@ -15,8 +15,8 @@ export function addSponsorship(req, res) {
     res.locals.oas.body.actor = res.locals.oas.security?.apikey.uid;
     delete res.locals.oas.body.isPaid;
 
-    Sponsorship.create(res.locals.oas.body).then(() => {
-        res.status(201).send();
+    Sponsorship.create(res.locals.oas.body).then((sponsorship) => {
+        res.status(201).send(sponsorship.cleanup());
     }).catch(err => {
         console.log(err);
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

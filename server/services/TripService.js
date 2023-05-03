@@ -46,8 +46,8 @@ export function getTrip(req, res) {
 
 export function addTrip(req, res) {
     res.locals.oas.body.manager = res.locals.oas.security?.apikey.uid;
-    Trip.create(res.locals.oas.body).then(async () => {
-        res.status(201).send();
+    Trip.create(res.locals.oas.body).then(async (trip) => {
+        res.status(201).send(await trip.cleanup());
     }).catch(err => {
         console.log(err.message)
         res.status(500).send({ // TODO: Realizar gestión del código y mensaje de error

@@ -36,8 +36,8 @@ export function addActor(req, res) {
     if (role === "Anonymous" && ![ "Explorer", "Sponsor" ].includes(res.locals.oas.body.role)) return res.status(403).send({ message: "Forbidden" });
     if (role === "Administrator" && ![ "Manager", "Administrator" ].includes(res.locals.oas.body.role)) return res.status(403).send({ message: "Forbidden" });
     
-    Actor.create({ ...res.locals.oas.body, banned: false }).then(() => {
-        res.status(201).send();
+    Actor.create({ ...res.locals.oas.body, banned: false }).then((actor) => {
+        res.status(201).send(actor.cleanup());
     }).catch(err => {
         if (err.message?.includes("duplicate key")) return res.status(409).send({ message: "Actor already exists" });
         else res.status(500).send({ message: err.message });

@@ -26,7 +26,7 @@ const TripSchema = new mongoose.Schema({
         },
         required: [true, "can't be blank"]
     },
-    pictures: [Buffer],
+    pictures: [String],
     cancelled: { type: Boolean, default: false },
     cancelReason: { type: String },
     isPublished: { type: Boolean, default: false },
@@ -51,7 +51,7 @@ TripSchema.methods.cleanup = async function () {
         requirements: this.requirements,
         startDate: this.startDate?.toISOString(),
         endDate: this.endDate?.toISOString(),
-        pictures: this.pictures?.map(b => b.toJSON()),
+        pictures: this.pictures,
         cancelled: this.cancelled,
         cancelReason: this.cancelReason,
         isPublished: this.isPublished,
