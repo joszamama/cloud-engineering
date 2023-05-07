@@ -1,3 +1,0 @@
-1. No he creado un campo específico de fecha de creación para Questions y Replies, ya que al usar "timestamps: true" se generan automáticamente.
-2. Tendría que añadir al archivo populateDB todo lo referente a Question y Reply para poder poblar la aplicación pero no dispongo de la cuenta para
-    modificar la API y por tanto no puedo obtener los endpoints que me generan los documentos de las colecciones correspondientes.

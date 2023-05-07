@@ -2,7 +2,6 @@ import { SecurityError } from "@oas-tools/commons";
 import admin from "firebase-admin";
 import Actor from "../models/Actor.js";
 import Application from "../models/Application.js";
-import Reply from "../models/Reply.js";
 import Trip from "../models/Trip.js";
 
 /* Security handler for Firebase IdToken verification */
@@ -42,10 +41,6 @@ export async function checkOwnership(decoded, paramName, paramValue) {
             return await Actor.findById(decoded?.uid).then(actor => actor.sponsorships.includes(paramValue)) ?? false;
         case "sponsorshipActor":
             return await Actor.findById(decoded?.uid).then(actor => paramValue === actor?._id.toString()) ?? false;
-        case "questionId":
-            return await Question.findById(paramValue).then(question => question.author.toString() === decoded?.uid) ?? false;
-        case "replyId":
-            return await Reply.findById(paramValue).then(reply => reply.author.toString() === decoded?.uid) ?? false;
         default:
             return false;
     }

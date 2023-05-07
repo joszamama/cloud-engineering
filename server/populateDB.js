@@ -1,19 +1,8 @@
-import mongoose from "mongoose";
 import Actor from "./models/Actor.js";
 import Trip from "./models/Trip.js";
 import Sponsorship from "./models/Sponsorship.js";
 import Finder from "./models/Finder.js";
 import Application from "./models/Application.js";
-
-/* Connect to mongo and populate */
-if (process.env.NODE_ENV !== "test") { 
-    mongoose.set('strictQuery', false);
-    mongoose.connect(process.env.DATABASE_URL ?? 'mongodb://127.0.0.1:27017/default-db', {
-        autoIndex: process.env.NODE_ENV === 'production' ? false : true
-    }).then(() => {
-        populateDB().then(() => mongoose.disconnect());
-    });
-}
 
 /* Populate function */
 export async function populateDB() {
@@ -25,59 +14,52 @@ export async function populateDB() {
         fetch("https://api.json-generator.com/templates/eH5svFguaoXD/data", { headers }).then(response => response.json()), // applications
         fetch("https://api.json-generator.com/templates/ylKLloo6pMaH/data", { headers }).then(response => response.json()) // actors
     ])
-        .then(async ([trips, sponsorships, finders, applications, actors]) => {
-            // Create relationships
-            actors.forEach((actor) => {
-                if (actor.role === "Manager") {
-                    const shuffled = trips.sort(() => 0.5 - Math.random()).map(trip => trip._id);
-                    actor.managedTrips = shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
-                    actor.managedTrips.forEach(tickerId => trips.find(trip => trip._id === tickerId).manager = actor._id);
-                } else if (actor.role === "Explorer") {
-                    const shuffled = applications.sort(() => 0.5 - Math.random()).map(application => application._id);
-                    actor.applications = shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
-                    actor.applications.forEach(applicationId => applications.find(application => application._id === applicationId).actor = actor._id);
+    .then(async ([trips, sponsorships, finders, applications, actors]) => {
+        // Create relationships
+        actors.forEach((actor) => {
+            if (actor.role === "Manager") {
+                actor.managedTrips = trips.map(trip => trip._id);
+            } else if (actor.role === "Explorer") {
+                actors.applications = applications.map(application => application._id);
+                actor.finders = finders.map(finder => finder._id);
+            } else if (actor.role === "Sponsor") {
+                actor.sponsorships = sponsorships.map(sponsorship => sponsorship._id);
+            }
+        });
 
-                    const shuffled2 = finders.sort(() => 0.5 - Math.random()).map(finder => finder._id);
-                    actor.finders = shuffled2.slice(0, Math.floor(Math.random() * 3) + 1);
-                    actor.finders.forEach(finderId => finders.find(finder => finder._id === finderId).actor = actor._id);
-                } else if (actor.role === "Sponsor") {
-                    const shuffled = sponsorships.sort(() => 0.5 - Math.random()).map(sponsorship => sponsorship._id);
-                    actor.sponsorships = shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
-                    actor.sponsorships.forEach(sponsorshipId => sponsorships.find(sponsorship => sponsorship._id === sponsorshipId).actor = actor._id);
-                }
-            });
+        trips.forEach((trip, idx) => {
+            trip.manager = actors.find(actor => actor.role === "Manager")._id;
+            trip.applications = applications.slice(idx * 5, idx * 5 + 5).map(application => application._id);
+            trip.sponsorships = sponsorships.slice(idx * 5, idx * 5 + 5).map(sponsorship => sponsorship._id);
+        });
 
-            trips.forEach((trip) => {
-                const shuffled = applications.filter(appl => appl.actor).sort(() => 0.5 - Math.random()).map(application => application._id);
-                trip.applications = shuffled.slice(0, Math.floor(Math.random() * 3) + 1);
-                trip.applications.forEach(applicationId => applications.find(application => application._id === applicationId).trip = trip._id);
+        applications.forEach((application) => {
+            application.actor = actors.find(actor => actor.role === "Explorer")._id;
+            application.trip = trips.find(trip => trip.applications.includes(application._id))._id;
+        });
 
-                const shuffled2 = sponsorships.filter(sponsorship => sponsorship.actor).sort(() => 0.5 - Math.random()).map(sponsorship => sponsorship._id);
-                trip.sponsorships = shuffled2.slice(0, Math.floor(Math.random() * 3) + 1);
-                trip.sponsorships.forEach(sponsorshipId => sponsorships.find(sponsorship => sponsorship._id === sponsorshipId).trip = trip._id);
+        sponsorships.forEach((sponsorship) => {
+            sponsorship.actor = actors.find(actor => actor.role === "Sponsor")._id;
+            sponsorship.trip = trips.find(trip => trip.sponsorships.includes(sponsorship._id))._id;
+        });
 
-                const randomFinder = finders.filter(finder => finder.actor).sort(() => 0.5 - Math.random()).map(finder => finder._id)[0];
-                finders.filter(finder => finder._id === randomFinder).forEach(finder => finder.result = [...finder.result, trip]);
-            });
+        finders.forEach((finder) => {
+            finder.actor = actors.find(actor => actor.role === "Explorer")._id;
+            finder.result = trips.filter(trip => {
+                return (finder.keyword ? (trip.title.toLowerCase().includes(finder.keyword.toLowerCase()) || trip.description.toLowerCase().includes(finder.keyword.toLowerCase())) : true)
+                && ((finder.priceFrom ? trip.price >= finder.priceFrom : true) && (finder.priceTo ? trip.price <= finder.priceTo : true))
+                && ((finder.dateFrom ? new Date(trip.startDate) >= new Date(finder.dateFrom) : true) && (finder.dateTo ? new Date(trip.startDate) <= new Date(finder.dateTo) : true))
+            })
+        });
 
-            // Exclude all entities with no relationships
-            trips = trips.filter(trip => trip.applications.length !== 0 || trip.sponsorships.length !== 0 || !trip.manager);
-            sponsorships = sponsorships.filter(sponsorship => sponsorship.trip && sponsorship.actor);
-            finders = finders.filter(finder => finder.result.length !== 0 && finder.actor);
-            applications = applications.filter(application => application.trip && application.actor);
-            actors = actors.filter(actor => actor.managedTrips.length !== 0 || actor.applications.length !== 0 || actor.sponsorships.length !== 0 || actor.finders.length !== 0);
-
-            // Insert data
-            await Promise.all([
-                Actor.deleteMany({ _id: { $in: actors.map(a => a._id) } }).then(() => Actor.insertMany(actors)),
-                Trip.deleteMany({ _id: { $in: trips.map(a => a._id) } }).then(() => Trip.insertMany(trips)),
-                Sponsorship.deleteMany({ _id: { $in: sponsorships.map(a => a._id) } }).then(() => Sponsorship.insertMany(sponsorships)),
-                Finder.deleteMany({ _id: { $in: finders.map(a => a._id) } }).then(() => Finder.insertMany(finders, { ordered: false })),
-                Application.deleteMany({ _id: { $in: applications.map(a => a._id) } }).then(() => Application.insertMany(applications))
-            ]).then(() => console.log("Database populated successfully"))
-                .catch(error => console.log("Could not populate database: " + error))
-        })
-        .catch(error => {
-            console.log("Could not populate database: " + error)
-        })
+        // Insert data
+        await Promise.all([
+            Actor.deleteMany().then(() => Actor.insertMany(actors)),
+            Trip.deleteMany().then(() => Trip.insertMany(trips)),
+            Sponsorship.deleteMany().then(() => Sponsorship.insertMany(sponsorships)),
+            Finder.deleteMany().then(() => Finder.insertMany(finders, { ordered: false })),
+            Application.deleteMany().then(() => Application.insertMany(applications))
+        ]).then(() => console.log("Database populated successfully"))
+            .catch(error => console.log("Could not populate database: " + error))
+    })
 }

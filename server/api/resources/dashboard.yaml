@@ -78,5 +78,3 @@ schemas:
               nullable: true
             count:
               type: integer
-      question_metrics:
-        type: object
