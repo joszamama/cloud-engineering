@@ -18,11 +18,10 @@ const DashboardSchema = new mongoose.Schema({
     trip_price_deviation: { type: Number, required: true },
     ratio_by_status: { type: Object, required: true },
     price_range_average: { type: Object, required: true },
-    top10_finder_keywords: { type: Array, required: true },
-    question_metrics: { type: Object, required: true }
+    top10_finder_keywords: { type: Array, required: true }
 }, {
     timestamps: true,
-    statics: { getApplicationMetrics, getTripMetrics, getFinderMetrics, getQuestionMetrics }
+    statics: { getApplicationMetrics, getTripMetrics, getFinderMetrics }
 });
 
 DashboardSchema.methods.cleanup = function () {
@@ -41,7 +40,6 @@ DashboardSchema.methods.cleanup = function () {
         trip_price_maximum: this.trip_price_maximum,
         trip_price_deviation: this.trip_price_deviation,
         ratio_by_status: this.ratio_by_status,
-        question_metrics: this.question_metrics,
         createdAt: this.createdAt,
         updatedAt: this.updatedAt
     };
@@ -201,24 +199,6 @@ function getFinderMetrics() {
                     },
                     { $limit: 10 },
                 ],
-            },
-        },
-    ]);
-}
-
-function getQuestionMetrics() {
-    return Trip.aggregate([
-        {
-            $group: {
-                _id: "$cancelled",
-                count: {
-                    $sum: 1,
-                },
-            },
-        },
-        {
-            $sort: {
-                count: -1,
             },
         },
     ]);
