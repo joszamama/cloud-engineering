@@ -72,14 +72,11 @@ export function updateTrip(req, res) {
     Trip.findById(res.locals.oas.params._id).then(async trip => {
         
         if (!trip) return res.status(404).send({ message: "Trip not found" });
-        if (trip.isPublished) {
-            const applications = await Application.find({ trip: trip._id, status: "ACCEPTED" }) ?? [];
-            if (new Date() < new Date(trip.startDate) || applications.length > 0) {
-                return res.status(400).send({ message: "The trip has started or has applications accepted" });
-            } else {
-                return res.status(400).send({ message: "Trip cannot be modified after being published" });
-            }
-        }
+        
+        const applications = await Application.find({ trip: trip._id, status: "ACCEPTED" }) ?? [];
+        if (new Date() < new Date(trip.startDate) || applications.length > 0) {
+            return res.status(400).send({ message: "The trip has started or has applications accepted" });
+        } 
         
         delete res.locals.oas.body.ticker;
         delete res.locals.oas.body.manager;
@@ -99,7 +96,6 @@ export function updateTrip(req, res) {
 export function deleteTrip(req, res) {
     Trip.findById(res.locals.oas.params._id).then(async trip => {
         if (!trip) return res.status(404).send({ message: "Trip not found" });
-        if (trip.isPublished) return res.status(400).send({ message: "Trip cannot be modified after being published" });
         await trip.delete();
         res.status(204).send();
     }).catch(err => {
