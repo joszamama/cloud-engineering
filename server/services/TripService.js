@@ -73,9 +73,8 @@ export function updateTrip(req, res) {
         
         if (!trip) return res.status(404).send({ message: "Trip not found" });
         
-        //const applications = await Application.find({ trip: trip._id, status: "ACCEPTED" }) ?? [];
-        if (new Date() < new Date(trip.startDate)) {
-            return res.status(400).send({ message: "The trip has started or has applications accepted" });
+        if (new Date() >= new Date(trip.startDate)) {
+            return res.status(400).send({ message: "The trip has started" });
         } 
         
         delete res.locals.oas.body.ticker;
