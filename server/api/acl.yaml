@@ -5,6 +5,8 @@ Anonymous:
     create:any: ["*"]
   api/v1/sponsorships/{_id}:
     read:any: ["*"]
+  api/v1/config:
+    read:any: ["*"]
 
 Explorer:
   api/v1/actors/{_id}:
@@ -32,6 +34,8 @@ Explorer:
     delete:own: ["*"]
   api/v1/sponsorships/{_id}:
     read:any: ["*"]
+  api/v1/config:
+    read:any: ["*"]
 
 Manager:
   api/v1/actors/{_id}:
@@ -52,6 +56,8 @@ Manager:
     update:own: ["*"]
     delete:own: ["*"]
   api/v1/sponsorships/{_id}:
+    read:any: ["*"]
+  api/v1/config:
     read:any: ["*"]
 
 Administrator:
@@ -124,3 +130,5 @@ Sponsor:
     delete:own: ["*"]
   api/v1/sponsorships/{_id}/pay:
     update:own: ["*"]
+  api/v1/config:
+    read:any: ["*"]
