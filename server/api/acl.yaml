@@ -39,7 +39,7 @@ Explorer:
 
 Manager:
   api/v1/actors/{_id}:
-    read:all: ["*"]
+    read:own: ["*"]
     delete:own: ["*"]
   api-v1-actors-deleteByEmail:
     delete:own: ["*"]
